@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html>
+  <%- include('../partials/head') %> <%- include('../partials/header') %>
+  <script>
+    const apiPopulate = "";
+
+    fetchFiltersData();
+
+    function fetchFiltersData() {
+      console.log("fetching filters data");
+      $.ajax({
+        url: apiUrl + "/api/filters?locale=" + lang + "&populate=*&",
+        type: "GET",
+        success: function (data) {
+          console.log("Got filters data:", data.data[0].attributes);
+          populateFilterDropdowns(data.data[0].attributes);
+        },
+        error: function (err) {
+          console.log(err);
+        },
+      });
+    }
+
+    function populateFilterDropdowns(filters) {
+      filters.categories.data.forEach(function (category) {
+        $("#categoryFilter").append(
+          `<option value="${category.id}">${category.attributes.Name}</option>`
+        );
+      });
+
+      filters.payment_methods.data.forEach(function (payment_method) {
+        $("#paymentmethodsFilter").append(
+          `<option value="${payment_method.id}">${payment_method.attributes.Name}</option>`
+        );
+      });
+
+      filters.providers.data.forEach(function (provider) {
+        $("#providerFilter").append(
+          `<option value="${provider.id}">${provider.attributes.Name}</option>`
+        );
+      });
+
+      filters.companies.data.forEach(function (company) {
+        $("#companyFilter").append(
+          `<option value="${company.id}">${company.attributes.Name}</option>`
+        );
+      });
+
+      filters.features.data.forEach(function (feature) {
+        $("#featuresFilter").append(
+          `<div class="ui checkbox"><input id="feature${feature.id}" type="checkbox" onchange="useFilters();"><label for="${feature.id}">${feature.attributes.Name}</label></div>`
+        );
+      });
+
+      filters.tags.data.forEach(function (tag) {
+        $("#tagsFilter").append(
+          `<div class="ui checkbox"><input id="tag${tag.id}" type="checkbox" onchange="useFilters();"><label for="${tag.id}">${tag.attributes.Name}</label></div>`
+        );
+      });
+
+      // enable dropdowns
+      $(".ui.filter.dropdown").dropdown({
+        clearable: true,
+      });
+
+      $("#bonusFilter").slider({
+        min: 0,
+        max: 1000,
+        step: 10,
+        start: [0, 1000],
+        range: true,
+        values: [0, 1000],
+        slide: function (event, ui) {
+          $("#bonusFilter")
+            .siblings(".labeled")
+            .html(
+              '<div class="ui left pointing label">' +
+                ui.values[0] +
+                '</div><div class="ui right pointing label">' +
+                ui.values[1] +
+                "</div>"
+            );
+        },
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      // listen to changes in any of the dropdown filters
+      $(".ui.filter.dropdown").on("change", function() {
+        useFilters();
+      });
+    });
+
+    function useFilters() {
+      $('#fetchingIndicator').show();
+      console.log("using filters...");
+
+      var dropdownFilters = {
+          category: $("#categoryFilter").val(),
+          payment_methods: $("#paymentmethodsFilter").val(),
+          providers: $("#providerFilter").val(),
+          company: $("#companyFilter").val(),
+      };
+
+      // company and category are a single select dropdown, so we need to convert it to an array
+      if (dropdownFilters.company) {
+        dropdownFilters.company = [dropdownFilters.company];
+      }
+
+      if (dropdownFilters.category) {
+        dropdownFilters.category = [dropdownFilters.category];
+      }
+
+      console.log("dropdownFilters:", dropdownFilters);
+
+      var checkboxFilters = {};
+      $("[id^=feature]").each(function() {
+        if ($(this).is(":checked")) {
+          var featureId = $(this).attr("id").replace("feature", "");
+          if (!checkboxFilters.features) {
+        checkboxFilters.features = [];
+          }
+          checkboxFilters.features.push(featureId);
+        }
+      });
+
+      $("[id^=tag]").each(function() {
+        if ($(this).is(":checked")) {
+          var tagId = $(this).attr("id").replace("tag", "");
+          if (!checkboxFilters.tags) {
+        checkboxFilters.tags = [];
+          }
+          checkboxFilters.tags.push(tagId);
+        }
+      });
+
+      console.log("checkboxFilters:", checkboxFilters);
+
+      const filters = {
+          ...dropdownFilters,
+          ...checkboxFilters,
+      };
+
+      console.log("filters:", filters);
+
+      // build the filter string to be passed to the API.
+      // e.g. "?filters[payment_methods][$eq][0]=1&filters[payment_methods][$eq][1]=2&[category][$eq][0]=1"
+      // if the filter is a feature, it should be "?filters[features][$in][0]=1&filters[$and][features][$in][1]=2" (note that ONLY starting from the second feature, the filter should be [$and][0][features][$in][1]=2)
+      let filterString = "";
+      Object.keys(filters).forEach((key) => {
+        if (filters[key]) {
+          if (key === "features") {
+            filters[key].forEach((value, index) => {
+              if (index === 0) {
+                filterString += `&filters[${key}][$in][${index}]=${value}`;
+              } else {
+                filterString += `&filters[$and][0][${key}][$in][${index}]=${value}`;
+              }
+            });
+          } else {
+            filters[key].forEach((value, index) => {
+              filterString += `&filters[${key}][$eq][${index}]=${value}`;
+            });
+          }
+        }
+      });
+      
+      // old code
+      // Object.keys(filters).forEach((key) => {
+      //   if (filters[key]) {
+      //     filters[key].forEach((value, index) => {
+      //       filterString += `&filters[${key}][$eq][${index}]=${value}&`;
+      //     });
+      //   }
+      // });
+
+      console.log("filterString:", filterString);
+      fetchCasinosData(filterString);
+    }
+
+
+    function fetchCasinosData(filters) {
+      console.log("fetching casinos data");
+      $.ajax({
+        url:
+          apiUrl +
+          "/api/casinos/?locale=" + lang + "&filter=" + filters + "&populate[Boni][fields][0]=Percent&populate[Boni][fields][1]=upTo&populate[features][fields][0]=Name&populate[features][populate][Label][fields][0]=Label&populate[features][populate][Label][fields][1]=Description&populate[features][populate][Label][populate][color][fields][0]=Hex&populate[features][populate][Label][populate][fontColor][fields][0]=Hex&populate[features][populate][Label][populate][icon][fields][0]=Alt&populate[features][populate][Label][populate][icon][populate][Image][fields][0]=url&populate[Logo][fields][0]=url&fields[0]=Name&fields[1]=MaxBet&fields[2]=Wager&fields[3]=WagerType&fields[4]=Label&fields[5]=Slug&fields[6]=MaxCashout&fields[7]=SortOrder&",
+        type: "GET",
+        success: function (data) {
+          console.log("API Filter URL:", apiUrl + "/api/casinos/?filter=" + filters);
+          console.log("Got casinos data:", data.data);
+
+          if (data.data.length === 0) {
+            $("#noCasinosFound").show();
+          } else {
+            $("#noCasinosFound").hide();
+          }
+
+          populateCasinos(data.data);
+        },
+        error: function (err) {
+          console.log(err);
+        },
+      });
+    }
+
+    function populateCasinos(data) {
+      console.log("populating casinos...");
+      // clear the response container
+      $("#responseContainer").empty();
+
+      // sort the casinos by SortOrder
+      data.sort((a, b) => a.attributes.SortOrder - b.attributes.SortOrder);
+
+      data.forEach(function (casino) {
+        console.log("casino features:", casino.attributes.features.data[0].attributes.Label.icon.data);
+        $("#responseContainer").append(
+          `<div class="top attached ui segment" id="casino${casino.id}" style="border:0px">
+            <div class="ui styled six column grid" style="">
+              <div class="ui four wide column">
+              ${casino.attributes.Label
+                ? '<div class="ui teal large ribbon label">' + casino.attributes.Label + '</div>'
+                : ""}
+              </div>
+              <div class="ui three wide left aligned column"></div>
+              <div class="ui nine wide right aligned column" style="padding-right: 10px">` +
+                // for each entry in casino.attributes.features.data that has attributes.Label not null, create a label
+                casino.attributes.features.data
+                  .filter((feature) => feature.attributes.Label)
+                  .map(
+                    // if else here
+                    (feature) =>
+                      `<a ${feature.attributes.Label.Description ? 'data-tooltip="' + feature.attributes.Label.Description + '"' : ''} + class="ui right floated small circular label" style="${feature.attributes.Label.fontColor ? 'color:' + feature.attributes.Label.fontColor.data.attributes.Hex + ';' : ''}${feature.attributes.Label.color.data.attributes.Hex ? 'background:' + feature.attributes.Label.color.data.attributes.Hex + ';' : ''}">${feature.attributes.Label.Label}</a>`
+                  )
+                  .join("") +
+              `</div>
+            </div>
+            <div class="ui styled three column grid" style="">
+              <div class="ui three wide center aligned column" style="padding-left: 15px">
+                <img style="max-width: 160px; max-height:80px" src="${apiUrl}${casino.attributes.Logo.data.attributes.url}" alt="${casino.attributes.Name}" />
+              </div>
+              <div class="ui computer only ten wide center aligned column">
+                <div class="ui center aligned four column grid">
+                  <div class="row" style="padding:0px;">
+                    <div class="column">
+                    <div class="bonustext">${casino.attributes.Boni[0].Percent} %</div>
+                    <div style="font-size: 1.2em; padding-top: 15px">up to ${casino.attributes.Boni[0].upTo} €</div>
+                    <div class="bonushead">Bonus</div>
+                    </div>
+                    <div class="column">
+                    <div class="bonustext">${casino.attributes.MaxBet} €</div>
+                    <div class="bonushead">Max Bet</div>
+                    </div>
+                    <div class="column">
+                    <div class="bonustext">
+                    ${casino.attributes.MaxCashout ? casino.attributes.MaxCashout + " €" : "No"}
+                    </div>
+                    <div class="bonushead">Max Cashout</div>
+                    </div>
+                    <div class="column">
+                    <div class="bonustext">${casino.attributes.Wager}x (${casino.attributes.WagerType})</div>
+                    <div class="bonushead">Wager</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="three wide right aligned column">
+                <div class="ui right floated">
+                <a href="/go/${casino.attributes.Slug}" target="_blank" class="ui large green button">PLAY NOW</a>
+                <center><a href="/casino/${casino.attributes.Slug}" class="ui tiny gray button">All Details</a></center>
+              </div>
+            </div>
+          </div>
+
+
+          
+
+<div id="div${casino.id}details" style="display:none;">
+ 
+</div>
+</div>
+
+<div class="bottom attached ui button detailsbutton" id="toggleBtn${casino.id}" onclick="toggleDetails(${casino.id})">Details</div>
+`
+        );
+      });
+    $('#fetchingIndicator').hide();
+    }
+
+    // if details button is clicked, toggle the details div of the casino
+    // dynamically load the details of the caisno from API and populate DIVs in the details div
+    function toggleDetails(casinoId) {
+      $('#fetchingIndicator').show();
+      console.log("toggling details for casino:", casinoId);
+      $("#div" + casinoId + "details").toggle();
+      populateCasinoDetails(casinoId);
+    }
+
+    function populateCasinoDetails(casinoId) {
+      console.log("populating casino details for casino:", casinoId);
+      $.ajax({
+        url:
+          apiUrl +
+          "/api/casinos/" +
+          casinoId +
+          "?populate[Boni][fields][0]=Percent&populate[Boni][fields][1]=upTo&populate[Boni][fields][2]=PromoCode&populate[Boni][fields][3]=PromoCodeDescription&populate[Boni][fields][4]=Freespins&populate[EgonsReview][fields][0]=Title&populate[EgonsReview][fields][1]=Description&populate[payment_methods][fields][0]=Name&populate[payment_methods][populate][Logo][fields][0]=url&populate[features][fields][0]=Name&populate[features][populate][icon][fields][0]=Alt&populate[features][populate][icon][populate][Image][fields][0]=url&populate[features][populate][Label][fields][0]=Label&populate[features][populate][Label][populate][color][fields][0]=Hex&populate[features][populate][Label][populate][icon][fields][0]=Alt&populate[features][populate][Label][populate][icon][populate][Image][fields][0]=url&populate[providers][fields][0]=Name&populate[providers][populate][Logo][fields][0]=url&populate[company][fields][0]=Name&populate[license][fields][0]=Name&populate[license][populate][Logo][fields][0]=url&fields[0]=Name",
+        type: "GET",
+        success: function (data) {
+          console.log("got details for casino ", casinoId, ":", data);
+          populateCasinoDetailsDiv(data);
+        },
+        error: function (err) {
+          console.log(err);
+        },
+      });
+    }
+
+    function populateCasinoDetailsDiv(data) {
+      console.log("populating casino details div");
+      var casino = data.data;
+      console.log("casino details:", casino);
+
+      $("#div" + casino.id + "details").empty();
+
+      $("#div" + casino.id + "details").append(
+        '<div class="attached ui segment" style="border: 0px;">' +
+          '<div class="ui styled four column grid">' +
+          '<div class="eight wide column">' +
+          "<h3>Casino Bonus</h3>" +
+          '<ul class="ui list">' +
+          casino.attributes.Boni.map(
+            (bonus) => `<div class="item">${bonus.Percent}% up to ${bonus.upTo} € ${bonus.Freespins ? ` <i>+ ${bonus.Freespins} Freespins` : ''} ${bonus.PromoCode ? ` Code: ${bonus.PromoCode}` : ''}</i></div>`
+          ).join('') +
+          "</ul>" +
+          (casino.attributes.EgonsReview !== null
+              ? 
+              `<h3>Egon's Review</h3>` +
+                `
+                  <div class="ui comments">
+  <div class="comment">
+    <a class="avatar">
+      <img src="img/logo-egon-animated.gif" />
+    </a>
+    <div class="content">
+      <a class="author">${casino.attributes.EgonsReview.Title}</a>
+      <div class="metadata">
+        <div class="date">2 days ago</div>
+      </div>
+      <div class="text">
+        ${casino.attributes.EgonsReview.Description[0].children[0].text}
+      </div>
+    </div>
+  </div>
+</div>
+                `
+              : '') +
+          "</div>" +
+          '<div class="eight wide column">' +
+          '<h3>Casino Features</h3>' +
+          '<ul class="ui list">' +
+          '<div class="item"><i class="building icon"></i>' + casino.attributes.company.data.attributes.Name + '</div> ' +
+          casino.attributes.features.data.map(
+            (feature) => `<div class="item"><img width="12px" src="${apiUrl}${feature.attributes.icon.data.attributes.Image.data.attributes.url}" /> ${feature.attributes.Name}</div>`
+          ).join('') +
+          "</ul>" +
+          "</div>" +
+          '<div class="eight wide column">' +
+          "<h3>Common Provider</h3>" +
+          '<div class="ui six column grid container">' +
+          casino.attributes.providers.data.map(
+            (provider) =>
+              `<div class="column"><img style="max-width: 50px" src="${apiUrl}${provider.attributes.Logo.data.attributes.url}" alt="${provider.attributes.Name}" /></div>`
+          ).join('') +
+          "</div>" +
+          "</div>" +
+          '<div class="eight wide column">' +
+          '<h3>Payment Methods</h3>' +
+          '<div class="ui six column grid container">' +
+          casino.attributes.payment_methods.data.map(
+            (payment_method) =>
+              `<div class="column"><img style="max-width: 50px" src="${apiUrl}${payment_method.attributes.Logo.data.attributes.url}" alt="${payment_method.attributes.Name}" /></div>`
+          ).join('') +
+          "</div>" +
+          (casino.attributes.license.data
+              ? '<div class="eight wide column">' +
+                "<h3>License</h3>" +
+                '<div class="ui column grid container">' +
+                '<div class="column"><img style="max-width: 100px" src="' +
+                apiUrl +
+                casino.attributes.license.data.attributes.Logo.data.attributes.url +
+                '" alt="" /></div>' +
+                '</div>' +
+                '</div>'
+              : '') +
+          "</div>" +
+          "</div>" +
+          "</div>" +
+          "</div>"
+      );
+      $('#fetchingIndicator').hide();
+    }
+
+    // if reset filters button is clicked, reset all filters
+    function resetFilters() {
+      $('#fetchingIndicator').show();
+      console.log("resetting filters...");
+      $("#categoryFilter").dropdown("clear");
+      $("#paymentmethodsFilter").dropdown("clear");
+      $("#providerFilter").dropdown("clear");
+      $("#companyFilter").dropdown("clear");
+      $("#featuresFilter input").prop("checked", false);
+      $("#tagsFilter input").prop("checked", false);
+      $("#bonusFilter").slider("values", [0, 1000]);
+      // $("#resetFiltersBtn").hide();
+      fetchCasinosData();
+    }
+
+    // other functions
+    // Copy text into clipboard
+    function copyText(textInput) {
+        navigator.clipboard.writeText
+            (textInput);
+    }
+
+  </script>
+
+  <body class="body">
+    <div class="ui wide container" style="margin-top: 100px !important; padding-bottom: 100px; padding-left:20px; padding-right:20px;">
+      <div class="ui two column stackable grid">
+        <div
+          class="sixteen wide mobile sixteen wide tablet four wide computer four wide large screen four wide widescreen column">
+          <div class="ui segment">
+            <div class="ui container grid filter">
+              <div
+                class="sixteen wide eight wide tablet eight wide mobile column"
+                style="padding: none">
+                <div class="filteritem">
+                  <div class="filterhead"><i class="compass icon"></i></div>
+                  <select class="ui fluid search filter dropdown" id="categoryFilter">
+                    <option value="">All</option>
+                  </select>
+                </div>
+                <div class="filteritem">
+                  <div class="filterhead">
+                    <i class="credit card outline icon"></i> Payment Methods
+                  </div>
+                  <select multiple class="ui fluid search filter dropdown" id="paymentmethodsFilter">
+                    <option value="">All</option>
+                  </select>
+                </div>
+                <div class="filteritem">
+                  <div class="filterhead"><i class="handshake outline icon"></i> Provider</div>
+                  <select multiple class="ui fluid search filter dropdown" id="providerFilter">
+                    <option value="">All</option>
+                  </select>
+                </div>
+              </div>
+              <div
+                class="sixteen wide eight wide tablet eight wide mobile column"
+                style="padding: none">
+                <div class="filteritem" id="featuresFilter">
+                  <div class="filterhead"><i class="tags icon"></i> Features</div>
+                  <div class="grid"></div>
+                </div>
+                <div class="filteritem" id="tagsFilter">
+                  <div class="filterhead"><i class="star icon"></i> Specials</div>
+                  <div class="grid"></div>
+                </div>
+                <div class="filteritem">
+                  <div class="filterhead"><i class="hand holding usd icon"></i> Minimum Bonus</div>
+                  <div id="">
+                    <div class="ui labeled bonus slider" id="bonusFilter"></div>
+                  </div>
+                </div>
+                <script></script>
+                <div class="filteritem">
+                  <div class="filterhead">
+                    <i class="building icon"></i> Company
+                  </div>
+                  <select class="ui fluid search filter dropdown" id="companyFilter">
+                    <option value="">None</option>
+                  </select>
+                </div>
+              </div>
+              <div class="filteritem" id="resetFiltersBtn" style="display: none">
+                <div class="center aligned medium orange ui button">Reset Filter</div>
+              </div>
+              <div id="" class="ui active"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sixteen wide mobile sixteen wide tablet twelve wide computer twelve wide large screen twelve wide widescreen column">
+          <!-- no casinos found message -->
+          <div class="ui icon message" id="noCasinosFound" style="display:none">
+            <i class="user secret icon"></i>
+            <div class="content">
+              <div class="header">No Casinos found</div>
+              <p>Try a different filter.</p>
+            </div>
+            <div class="filteritem" onclick="resetFilters()">
+              <div class="center aligned medium orange ui button">Reset Filters</div>
+            </div>
+          </div>
+          <!-- end no casinos found message -->
+
+          <!-- casinos list -->
+          <div id="responseContainer">
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="js/ageCheck.js"></script>
+  <%- include('../partials/footer') %>
+
+</html>

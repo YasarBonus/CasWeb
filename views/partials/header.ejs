@@ -1,0 +1,61 @@
+<a href="#" id="scroll" style="display: none; z-index: 1000"><span></span></a>
+
+<div class="ui fixed inverted menu">
+  <div style="display: none" id="fetchingIndicator" class="ui right aligned active large orange loader"></div>
+
+  <div class="ui container" style="font-size: 20px">      
+    <a href="/" class="header item">
+      <img id="website-logo" class="logo" />
+      <div id="website-name" class="content" style="padding-left: 10px"></div>
+    </a>
+    <div id="header-menu-links" class="ui inverted menu" style="font-size: 20px"></div>
+    <!-- div class="ui simple dropdown item">
+        Dropdown <i class="dropdown icon"></i>
+        <div class="menu">
+          <a class="item" href="#">Link Item</a>
+          <a class="item" href="#">Link Item</a>
+          <div class="divider"></div>
+          <div class="header">Header Item</div>
+          <div class="item">
+            <i class="dropdown icon"></i>
+            Sub Menu
+            <div class="menu">
+              <a class="item" href="#">Link Item</a>
+              <a class="item" href="#">Link Item</a>
+            </div>
+          </div>
+          <a class="item" href="#">Link Item</a>
+        </div>
+      </div -->
+
+    <div id="header-menu-right" class="ui right inverted menu" style="font-size: 20px">
+      <div class="ui simple dropdown item" id="languageMenu"></div>
+    </div>
+  </div>
+</div>
+
+<div class="ui tiny modal" id="initialDialog" style="display: none">
+  <i class="close icon"></i>
+  <!-- div class="header">
+          Please confirm that you are 18 years or older.
+          </div -->
+  <div class="image content">
+    <div class="ui medium image">
+      <img src="/img/logo-egon-animated.gif" width="150px" />
+    </div>
+    <div class="description">
+      <div class="ui header">You must confirm that you are 18 years or older.</div>
+      <p>
+        By continuing, you accept the use of cookies to keep this website functional.
+        <a href="#">Learn more</a>
+      </p>
+    </div>
+  </div>
+  <div class="actions">
+    <a href="https://youtubekids.com" class="ui black deny button"> Get me out </a>
+    <button id="confirmAge" class="ui positive right labeled icon button">
+      Continue
+      <i class="checkmark icon"></i>
+    </button>
+  </div>
+</div>

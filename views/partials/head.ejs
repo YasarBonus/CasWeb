@@ -1,0 +1,111 @@
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link id="website-favicon" rel="icon" type="image/png">
+
+    <title id="website-title"></title>
+    <meta id="website-description" name="description">
+    <meta id="website-keywords" name="keywords">
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.3/dist/semantic.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.3/dist/semantic.min.js"></script>
+    
+    <link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css"
+/>
+    
+    <link rel="stylesheet" href="/styles/style.css">
+
+    <script src="https://kit.fontawesome.com/a35631f35d.js" crossorigin="anonymous"></script>
+
+    <!-- Matomo -->
+    <script>
+
+      var userLang = localStorage.getItem('userLang') || navigator.language || navigator.userLanguage;
+      console.log('User language:', userLang);
+
+      // values here have been changed as long as we do not have german content.
+      // german users will see the english version of the website
+      if (!localStorage.getItem('lang')) {
+        if (userLang.includes('de')) {
+          localStorage.setItem('lang', 'en'); // de
+          var lang = 'en'; // de
+          var flag = 'gb'; // de
+        } else {
+          localStorage.setItem('lang', 'en');
+          var lang = 'en';
+          var flag = 'gb';
+        }
+      } else {
+        var lang = localStorage.getItem('lang');
+        if (lang == 'de') {
+          var flag = 'gb';
+        } else {
+          var flag = 'gb';
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+
+        document.getElementById('languageMenu').innerHTML = '<span class="fi fi-' + flag + '"></span>' +
+          '<div class="menu">' +
+          '<a class="item" onclick="setLanguage(\'en\')"><span class="fi fi-gb"></span> English</a>' +
+          '<a class="item" onclick="setLanguage(\'de\')"><span class="fi fi-de"></span> Deutsch</a>' +
+          '</div>'
+          ;
+      });
+
+      function setLanguage(lang) {
+        localStorage.setItem('lang', lang);
+        location.reload();
+      }
+
+      const apiUrl = "https://api.yasarbonus.com";
+
+      fetch(`${apiUrl}/api/website?locale=${lang}&populate=*`)
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('website-title').innerText = data.data.attributes.Title;
+          document.getElementById('website-description').content = data.data.attributes.Description;
+          document.getElementById('website-keywords').content = data.data.attributes.Keywords;
+          document.getElementById('website-favicon').href = apiUrl + data.data.attributes.Favicon.data.attributes.url;
+          document.getElementById('website-logo').src = apiUrl + data.data.attributes.Logo.data.attributes.url;
+          document.getElementById('website-name').innerText = data.data.attributes.Name;
+          // load custom CSS
+          if (data.data.attributes.CustomCSS) {
+          document.head.innerHTML += '<style>' + data.data.attributes.CustomCSS + '</style>';
+          }
+
+          for (let i = 0; i < data.data.attributes.Menu.length; i++) {
+            document.getElementById('header-menu-links').innerHTML += '<a href="' + data.data.attributes.Menu[i].Target + '" class="item">' + data.data.attributes.Menu[i].Name + '</a>';
+          }
+
+          for (let i = 0; i < data.data.attributes.SocialLinks.length; i++) {
+            // add social links to the beginning of the social menu
+            document.getElementById('header-menu-right').innerHTML = '<a href="' + data.data.attributes.SocialLinks[i].Target + '" target="_blank" class="item"><i class="fa-brands fa-' + data.data.attributes.SocialLinks[i].FaBrandsIcon + '"></i></a>' + document.getElementById('header-menu-right').innerHTML;
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching metadata:', error);
+        });
+    </script>
+  <script>
+    var _paq = window._paq = window._paq || [];
+    /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+    _paq.push(['trackPageView']);
+    _paq.push(['enableLinkTracking']);
+    (function() {
+      var u="//analytics.yasarbonus.com/";
+      _paq.push(['setTrackerUrl', u+'matomo.php']);
+      _paq.push(['setSiteId', '13']);
+      var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+      g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+    })();
+  </script>
+  <noscript><p><img src="//analytics.yasarbonus.com/matomo.php?idsite=13&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+  <!-- End Matomo Code -->
+  
+</head>
