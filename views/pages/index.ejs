@@ -222,20 +222,33 @@
         console.log("casino features:", casino.attributes.features.data[0].attributes.Label.icon.data);
         $("#responseContainer").append(
           `<div class="top attached ui segment" id="casino${casino.id}" style="border:0px">
-            <div class="ui styled six column grid" style="">
-              <div class="computer only four wide column">
+            <div class="ui styled two column grid" style="">
+              <div class="four wide computer only column">
               ${casino.attributes.Label
                 ? '<div class="ui teal large ribbon label">' + casino.attributes.Label + '</div>'
                 : ""}
               </div>
-              <div class="twelve wide right aligned column" style="padding-right: 10px">` +
+              <div class="twelve wide computer only right aligned column" style="padding-right: 10px">` +
                 // for each entry in casino.attributes.features.data that has attributes.Label not null, create a label
                 casino.attributes.features.data
                   .filter((feature) => feature.attributes.Label)
                   .map(
                     // if else here
                     (feature) =>
-                      `<a ${feature.attributes.Label.Description ? 'data-tooltip="' + feature.attributes.Label.Description + '"' : ''} + class="ui right floated small circular label" style="${feature.attributes.Label.fontColor ? 'color:' + feature.attributes.Label.fontColor.data.attributes.Hex + ';' : ''}${feature.attributes.Label.color.data.attributes.Hex ? 'background:' + feature.attributes.Label.color.data.attributes.Hex + ';' : ''}">${feature.attributes.Label.Label}</a>`
+                      `<a ${feature.attributes.Label.Description ? 'data-tooltip="' + feature.attributes.Label.Description + '"' : ''} + class="ui small circular label" style="${feature.attributes.Label.fontColor ? 'color:' + feature.attributes.Label.fontColor.data.attributes.Hex + ';' : ''}${feature.attributes.Label.color.data.attributes.Hex ? 'background:' + feature.attributes.Label.color.data.attributes.Hex + ';' : ''}">${feature.attributes.Label.Label}</a>`
+                  )
+                  .join("") +
+              `
+              <a class="ui right floated small circular label" style="background:${casino.attributes.category.data.attributes.LabelColor.data.attributes.Hex}; color: white;">${casino.attributes.category.data.attributes.Name}</a>
+              </div>
+              <div class="sixteen wide tablet only mobile only center aligned column">` +
+                // for each entry in casino.attributes.features.data that has attributes.Label not null, create a label
+                casino.attributes.features.data
+                  .filter((feature) => feature.attributes.Label)
+                  .map(
+                    // if else here
+                    (feature) =>
+                      `<a ${feature.attributes.Label.Description ? 'data-tooltip="' + feature.attributes.Label.Description + '"' : ''} + class="ui small circular label" style="${feature.attributes.Label.fontColor ? 'color:' + feature.attributes.Label.fontColor.data.attributes.Hex + ';' : ''}${feature.attributes.Label.color.data.attributes.Hex ? 'background:' + feature.attributes.Label.color.data.attributes.Hex + ';' : ''}">${feature.attributes.Label.Label}</a>`
                   )
                   .join("") +
               `
