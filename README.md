@@ -115,6 +115,9 @@ Use this: https://docs.strapi.io/dev-docs/api/rest/interactive-query-builder
         }
       }
     },
+    EgonsReview: {
+      fields: ['Title', 'Description']
+    }
   },
   fields: ['Name'],
 }
