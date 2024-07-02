@@ -244,7 +244,7 @@
               </div>
             </div>
             <div class="ui styled three column grid" style="">
-              <div class="ui three wide center aligned column" style="padding-left: 15px">
+              <div class="eight wide mobile eight wide tablet three wide computer three wide large screen three wide widescreen center aligned column" style="padding-left: 15px">
                 <img style="max-width: 160px; max-height:80px" src="${apiUrl}${casino.attributes.Logo.data.attributes.url}" alt="${casino.attributes.Name}" />
               </div>
               <div class="ui computer only ten wide center aligned column">
@@ -272,12 +272,37 @@
                   </div>
                 </div>
               </div>
-              <div class="three wide right aligned column">
+              <div class="eight wide mobile eight wide tablet three wide computer three wide large screen three wide widescreen center aligned column">
                 <div class="ui right floated">
-                <a href="/go/${casino.attributes.Slug}" target="_blank" class="ui large green button">PLAY NOW</a>
-                <center><a href="/casino/${casino.attributes.Slug}" class="ui tiny gray button">All Details</a></center>
+                  <a href="/go/${casino.attributes.Slug}" target="_blank" class="ui large green button">PLAY NOW</a>
+                  <center><a href="/casino/${casino.attributes.Slug}" class="ui tiny gray button">All Details</a></center>
+                </div>
               </div>
-            </div>
+              <div class="ui mobile only tablet only sixteen wide center aligned column">
+                  <div class="ui center aligned two column grid">
+                    <div class="row" style="padding:20px;">
+                      <div class="column">
+                      <div class="bonustext">${casino.attributes.Boni[0].Percent} %</div>
+                      <div style="font-size: 1.2em; padding-top: 15px">up to ${casino.attributes.Boni[0].upTo} €</div>
+                      <div class="bonushead">Bonus</div>
+                      </div>
+                      <div class="column">
+                      <div class="bonustext">${casino.attributes.MaxBet} €</div>
+                      <div class="bonushead">Max Bet</div>
+                      </div>
+                      <div class="column">
+                      <div class="bonustext">
+                      ${casino.attributes.MaxCashout ? casino.attributes.MaxCashout + " €" : "No"}
+                      </div>
+                      <div class="bonushead">Max Cashout</div>
+                      </div>
+                      <div class="column">
+                      <div class="bonustext">${casino.attributes.Wager}x (${casino.attributes.WagerType})</div>
+                      <div class="bonushead">Wager</div>
+                      </div>
+                    </div>
+                  </div>
+              </div>
           </div>
 
 
