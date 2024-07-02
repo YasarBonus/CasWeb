@@ -6,10 +6,10 @@
 <body class="body">
   <div class="ui container"style="margin-top: 100px !important; padding-bottom: 100px;">
     <div class="ui segment" >
-      <h1>Hi, here are the details for <%= casino.attributes.Name  %> (ID <%= casino.id %>):</h1>
         <div id="casino-container"></div>
     </div>
 </div>
+
 
 </body>
 
@@ -20,40 +20,136 @@
       fetchCasino();
     });
     function fetchCasino() {
-    fetch(`${apiUrl}/api/casinos/<%= casino.id %>?locale=${lang}&populate=*`)
+    fetch(`${apiUrl}/api/casinos/<%= casino.id %>?locale=${lang}&populate[Boni][fields][0]=Percent&populate[Boni][fields][1]=upTo&populate[Boni][fields][2]=PromoCode&populate[Boni][fields][3]=PromoCodeDescription&populate[Boni][fields][4]=Freespins&populate[payment_methods][fields][0]=Name&populate[payment_methods][fields][1]=SortOrder&populate[payment_methods][populate][Logo][fields][0]=url&populate[features][fields][0]=Name&populate[features][populate][icon][fields][0]=Alt&populate[features][populate][icon][populate][Image][fields][0]=url&populate[features][populate][Label][fields][0]=Label&populate[features][populate][Label][populate][color][fields][0]=Hex&populate[features][populate][Label][populate][icon][fields][0]=Alt&populate[features][populate][Label][populate][icon][populate][Image][fields][0]=url&populate[providers][fields][0]=Name&populate[providers][fields][1]=SortOrder&populate[providers][populate][Logo][fields][0]=url&populate[company][fields][0]=Name&populate[license][fields][0]=Name&populate[license][populate][Logo][fields][0]=url&populate[EgonsReview][fields][0]=Title&populate[EgonsReview][fields][1]=Description&populate[category][fields][0]=Name&populate[category][populate][LabelColor][fields][0]=Hex&populate[Logo][fields][0]=url&fields[0]=Name&fields[1]=MaxBet&fields[2]=Wager&fields[3]=WagerType&fields[4]=Label&fields[5]=Slug&fields[6]=MaxCashout&fields[7]=SortOrder`)
       .then(response => response.json())
       .then(data => {
-        const casinoContainer = document.getElementById('casino-container');
-        const casinoHTML = generateCasinoHTML(data);
-        casinoContainer.innerHTML = casinoHTML;
+        casino = data.data
+        console.log('Casino data:', data);
+        // set the casino data in the container div
+        document.getElementById('casino-container').innerHTML = `
+          <div class="ui two column centered grid">
+            <div class="row">
+              <div class="eight wide center aligned column"><h1>${casino.attributes.Name} Casino Review</h1><a href="/go/${casino.attributes.Slug}" target="_blank" class="ui massive green button">PLAY NOW</a></div>
+              <div class="six wide column"><img src="${apiUrl}${casino.attributes.Logo.data.attributes.url}"></div>
+              
+            </div>
+            <div class="center aligned row">
+            <div class="sixteen wide center aligned column">
+                <div class="ui four statistics">
+  <div class="statistic">
+    <div class="value">
+      ${casino.attributes.Boni[0].Percent} %
+    </div>
+    <div class="label">
+      up to ${casino.attributes.Boni[0].upTo} €
+    </div>
+  </div>
+  <div class="statistic">
+    <div class="value">
+      ${casino.attributes.MaxBet} €
+    </div>
+    <div class="label">
+      Max Bet
+    </div>
+  </div>
+  <div class="statistic">
+    <div class="value">
+      ${casino.attributes.MaxCashout ? casino.attributes.MaxCashout + " €" : "No"}
+    </div>
+    <div class="label">
+      Max Cashout
+    </div>
+  </div>
+  <div class="statistic">
+    <div class="value">
+      ${casino.attributes.Wager}x
+    </div>
+    <div class="label">
+      (${casino.attributes.WagerType}) Wager
+    </div>
+  </div>
+</div>
+              </div>
+              </div>
+              <div class="eight wide column"><h2>Casino Bonus</h2>
+                ` +
+                casino.attributes.Boni.map(
+            (bonus) => `<div class="item">${bonus.Percent}% up to ${bonus.upTo} € ${bonus.Freespins ? ` <i>+ ${bonus.Freespins} Freespins` : ''} ${bonus.PromoCode ? ` Code: ${bonus.PromoCode}` : ''}</i></div>`
+          ).join('') + `
+              </div>
+              <div class="eight wide column"><h2>Casino Features</h2>
+                ` +
+                casino.attributes.features.data.map(
+            (feature) => `<div class="item"><img width="12px" src="${apiUrl}${feature.attributes.icon.data.attributes.Image.data.attributes.url}" /> ${feature.attributes.Name}</div>`
+          ).join('')  + `
+              </div>
+              <div class="row">
+              <div class="eight wide column">` +
+          (casino.attributes.EgonsReview !== null
+              ? 
+              `<h2>Egon's Review</h2>` +
+                `
+                  <div class="ui comments">
+  <div class="comment">
+    <a class="avatar">
+      <img src="/images/Egon.png" />
+    </a>
+    <div class="content">
+      <a class="author">${casino.attributes.EgonsReview.Title}</a>
+      <div class="text">
+        ${casino.attributes.EgonsReview.Description[0].children[0].text}
+      </div>
+    </div>
+  </div>
+</div>
+                `
+              : '') + `</div>
+              <div class="six wide column">` +
+          (casino.attributes.license.data
+              ? '<div class="eight wide column" style="padding-top:30px">' +
+                "<h2>License</h2>" +
+                '<div class="ui column grid container">' +
+                '<div class="column"><img style="max-width: 100px" src="' +
+                apiUrl +
+                casino.attributes.license.data.attributes.Logo.data.attributes.url +
+                '" alt="" /></div>' +
+                '</div>' +
+                '</div>'
+              : '') + `</div>
+            </div>
+              <div class="eight wide column"><h2>Provider</h2>
+                <div class="ui six column grid container">
+                ` +
+                casino.attributes.providers.data
+            .sort((a, b) => a.attributes.SortOrder - b.attributes.SortOrder)
+            .map(
+              (provider) =>
+              `<img style="max-height:60px;padding-top:20px" src="${apiUrl}${provider.attributes.Logo.data.attributes.url}" alt="${provider.attributes.Name}" />`
+            )
+            .join('')  + `
+            </div>
+              </div>
+              <div class="eight wide column"><h2>Payment Methods</h2>
+                <div class="ui six column grid container">
+                ` +
+                casino.attributes.payment_methods.data
+          .sort((a, b) => a.attributes.SortOrder - b.attributes.SortOrder)
+          .map(
+            (payment_method) =>
+              `<img style="max-height:60px;padding-top:20px" src="${apiUrl}${payment_method.attributes.Logo.data.attributes.url}" alt="${payment_method.attributes.Name}" />`
+          ).join('')  + `
+          </div>
+              </div>
+          <div class="ui two column centered grid">
+            
+          </div>
+        `;
       })
       .catch(error => {
         console.error('Error fetching casino:', error);
       });
     }
 
-    function generateCasinoHTML(casinoData) {
-      let html = '';
-      // auto-generated table from the casino data with all the attributes and their values and object keys
-        html += `<table class="ui celled table">
-            <thead>
-            <tr>
-                <th>Attribute</th>
-                <th>Value</th>
-            </tr>
-            </thead>
-            <tbody>`;
-        for (const [key, value] of Object.entries(casinoData.data.attributes)) {
-            html += `<tr>
-                <td>${key}</td>
-                <td>${value}</td>
-            </tr>`;
-        }
-        html += `</tbody>
-        </table>`;
-        return html;
-        
-    }
 </script>
 
 <%- include('../partials/footer') %>
