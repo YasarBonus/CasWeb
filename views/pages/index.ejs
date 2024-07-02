@@ -184,7 +184,7 @@
       $.ajax({
         url:
           apiUrl +
-          "/api/casinos/?locale=" + lang + "&filter=" + filters + "&populate[Boni][fields][0]=Percent&populate[Boni][fields][1]=upTo&populate[features][fields][0]=Name&populate[features][populate][Label][fields][0]=Label&populate[features][populate][Label][fields][1]=Description&populate[features][populate][Label][populate][color][fields][0]=Hex&populate[features][populate][Label][populate][fontColor][fields][0]=Hex&populate[features][populate][Label][populate][icon][fields][0]=Alt&populate[features][populate][Label][populate][icon][populate][Image][fields][0]=url&populate[Logo][fields][0]=url&fields[0]=Name&fields[1]=MaxBet&fields[2]=Wager&fields[3]=WagerType&fields[4]=Label&fields[5]=Slug&fields[6]=MaxCashout&fields[7]=SortOrder&",
+          "/api/casinos/?locale=" + lang + "&filter=" + filters + "&populate[Boni][fields][0]=Percent&populate[Boni][fields][1]=upTo&populate[category][fields][0]=Name&populate[category][populate][LabelColor][fields][0]=Hex&populate[features][fields][0]=Name&populate[features][populate][Label][fields][0]=Label&populate[features][populate][Label][fields][1]=Description&populate[features][populate][Label][populate][color][fields][0]=Hex&populate[features][populate][Label][populate][fontColor][fields][0]=Hex&populate[features][populate][Label][populate][icon][fields][0]=Alt&populate[features][populate][Label][populate][icon][populate][Image][fields][0]=url&populate[Logo][fields][0]=url&fields[0]=Name&fields[1]=MaxBet&fields[2]=Wager&fields[3]=WagerType&fields[4]=Label&fields[5]=Slug&fields[6]=MaxCashout&fields[7]=SortOrder&",
         type: "GET",
         success: function (data) {
           console.log("API Filter URL:", apiUrl + "/api/casinos/?filter=" + filters);
@@ -233,7 +233,9 @@
                       `<a ${feature.attributes.Label.Description ? 'data-tooltip="' + feature.attributes.Label.Description + '"' : ''} + class="ui right floated small circular label" style="${feature.attributes.Label.fontColor ? 'color:' + feature.attributes.Label.fontColor.data.attributes.Hex + ';' : ''}${feature.attributes.Label.color.data.attributes.Hex ? 'background:' + feature.attributes.Label.color.data.attributes.Hex + ';' : ''}">${feature.attributes.Label.Label}</a>`
                   )
                   .join("") +
-              `</div>
+              `
+              <a class="ui right floated small circular label" style="background:${casino.attributes.category.data.attributes.LabelColor.data.attributes.Hex}; color: white;">${casino.attributes.category.data.attributes.Name}</a>
+              </div>
             </div>
             <div class="ui styled three column grid" style="">
               <div class="ui three wide center aligned column" style="padding-left: 15px">

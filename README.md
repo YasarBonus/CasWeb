@@ -19,6 +19,14 @@ Use this: https://docs.strapi.io/dev-docs/api/rest/interactive-query-builder
     Boni: {
       fields: ['Percent', 'upTo']
     },
+    category: {
+      fields: ['Name'],
+      populate: {
+        LabelColor: {
+          fields: ['Hex']
+        },
+      }
+    },
     features: {
       fields: ['Name'],
       populate: {
