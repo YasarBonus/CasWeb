@@ -261,7 +261,7 @@
               </div>
               <div class="ui computer only ten wide center aligned column">
                 <div class="ui center aligned four column grid">
-                  <div class="row" style="padding:0px;">
+                  <div class="row" style="">
                     <div class="column">
                     <div class="bonustext">${casino.attributes.Boni[0].Percent} %</div>
                     <div style="font-size: 1.2em; padding-top: 15px">up to ${casino.attributes.Boni[0].upTo} €</div>
@@ -296,13 +296,13 @@
                       <div class="bonustext">${casino.attributes.MaxBet} €</div>
                       <div class="bonushead">Max Bet</div>
                       </div>
-                      <div class="column">
+                      <div class="column" style="padding-top:20px">
                       <div class="bonustext">
                       ${casino.attributes.MaxCashout ? casino.attributes.MaxCashout + " €" : "No"}
                       </div>
                       <div class="bonushead">Max Cashout</div>
                       </div>
-                      <div class="column">
+                      <div class="column" style="padding-top:20px">
                       <div class="bonustext">${casino.attributes.Wager}x (${casino.attributes.WagerType})</div>
                       <div class="bonushead">Wager</div>
                       </div>
@@ -310,10 +310,8 @@
                   </div>
               </div>
               <div class="sixteen wide mobile sixteen wide tablet three wide computer three wide large screen three wide widescreen center aligned column">
-                <div class="ui right floated">
-                  <a href="/go/${casino.attributes.Slug}" target="_blank" class="ui large green button">PLAY NOW</a>
-                  <center><a href="/casino/${casino.attributes.Slug}" class="ui tiny gray button">Review</a></center>
-                </div>
+                  <a href="/go/${casino.attributes.Slug}" target="_blank" class="ui large green button">PLAY NOW</a><br><br>
+                  <a href="/casino/${casino.attributes.Slug}" class="ui small orange text">Review >></a>
               </div>
           </div>
 
@@ -326,6 +324,7 @@
 </div>
 
 <div class="bottom attached ui button detailsbutton" id="toggleBtn${casino.id}" onclick="toggleDetails(${casino.id})">Details</div>
+
 `
         );
       });
@@ -413,7 +412,7 @@
             .sort((a, b) => a.attributes.SortOrder - b.attributes.SortOrder)
             .map(
               (provider) =>
-              `<img style="max-height:40px;padding-top:10px" src="${apiUrl}${provider.attributes.Logo.data.attributes.url}" alt="${provider.attributes.Name}" />`
+              `<img style="max-height:40px;padding-top:20px" src="${apiUrl}${provider.attributes.Logo.data.attributes.url}" alt="${provider.attributes.Name}" />`
             )
             .join('') +
           "</div>" +
@@ -425,7 +424,7 @@
           .sort((a, b) => a.attributes.SortOrder - b.attributes.SortOrder)
           .map(
             (payment_method) =>
-              `<img style="max-height:40px;padding-top:10px" src="${apiUrl}${payment_method.attributes.Logo.data.attributes.url}" alt="${payment_method.attributes.Name}" />`
+              `<img style="max-height:40px;padding-top:20px" src="${apiUrl}${payment_method.attributes.Logo.data.attributes.url}" alt="${payment_method.attributes.Name}" />`
           ).join('') +
           "</div>" +
           (casino.attributes.license.data
