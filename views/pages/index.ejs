@@ -65,21 +65,15 @@
 
       $("#bonusFilter").slider({
         min: 0,
-        max: 1000,
-        step: 10,
-        start: [0, 1000],
+        max: 300,
+        step: 50,
         range: true,
-        values: [0, 1000],
         slide: function (event, ui) {
           $("#bonusFilter")
             .siblings(".labeled")
-            .html(
-              '<div class="ui left pointing label">' +
-                ui.values[0] +
-                '</div><div class="ui right pointing label">' +
-                ui.values[1] +
-                "</div>"
-            );
+        },
+        onChange: function (event, ui) {
+          useFilters();
         },
       });
     }
@@ -136,6 +130,10 @@
 
       console.log("checkboxFilters:", checkboxFilters);
 
+      // bonus filter
+      var bonusFilter = $("#bonusFilter").slider("get value");
+      console.log("bonusFilter:", bonusFilter);
+
       const filters = {
           ...dropdownFilters,
           ...checkboxFilters,
@@ -146,6 +144,7 @@
       // build the filter string to be passed to the API.
       // e.g. "?filters[payment_methods][$eq][0]=1&filters[payment_methods][$eq][1]=2&[category][$eq][0]=1"
       // if the filter is a feature, it should be "?filters[features][$in][0]=1&filters[$and][features][$in][1]=2" (note that ONLY starting from the second feature, the filter should be [$and][0][features][$in][1]=2)
+      // for the bonus filter, it should check if there is any bonus that is min or greater than the minimum bonus
       let filterString = "";
       Object.keys(filters).forEach((key) => {
         if (filters[key]) {
@@ -164,6 +163,13 @@
           }
         }
       });
+
+      // Implementing the bonusFilter
+      if (bonusFilter && bonusFilter > 0) { // Check if bonusFilter has a value greater than 0
+          // Append the bonusFilter condition to the filterString
+          // Assuming the API has a 'bonus' field to filter on
+          filterString += `&filters[MaxBoniPercent][$gte]=${bonusFilter}`;
+      }
       
       // old code
       // Object.keys(filters).forEach((key) => {
@@ -414,7 +420,7 @@
       $("#companyFilter").dropdown("clear");
       $("#featuresFilter input").prop("checked", false);
       $("#tagsFilter input").prop("checked", false);
-      $("#bonusFilter").slider("values", [0, 1000]);
+      $("#bonusFilter").slider("value", '0');
       // $("#resetFiltersBtn").hide();
       fetchCasinosData();
     }
