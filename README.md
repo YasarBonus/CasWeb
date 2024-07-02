@@ -60,7 +60,7 @@ Use this: https://docs.strapi.io/dev-docs/api/rest/interactive-query-builder
       fields: ['Percent', 'upTo', 'PromoCode', 'PromoCodeDescription', 'Freespins']
     },
     payment_methods: {
-      fields: ['Name'],
+      fields: ['Name', 'SortOrder'],
       populate: {
         Logo: {
           fields: ['url']
@@ -97,7 +97,7 @@ Use this: https://docs.strapi.io/dev-docs/api/rest/interactive-query-builder
       }
     },
     providers: {
-      fields: ['Name'],
+      fields: ['Name', 'SortOrder'],
       populate: {
         Logo: {
           fields: ['url']
