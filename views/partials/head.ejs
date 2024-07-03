@@ -7,6 +7,13 @@
     <meta id="website-description" name="description">
     <meta id="website-keywords" name="keywords">
 
+    <!-- Open Graph Meta Tags -->
+    <meta id="og-title" property="og:title" content="Your Website Title">
+    <meta id="og-description" property="og:description" content="A brief description of your website.">
+    <meta id="og-image" property="og:image" content="URL_to_your_image.jpg">
+    <meta id="og-url" property="og:url" content="https://yourwebsite.com">
+    <meta property="og:type" content="website">
+
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.3/dist/semantic.min.css">
@@ -73,6 +80,10 @@
       fetch(`${apiUrl}/api/website?locale=${lang}&populate=*`)
         .then(response => response.json())
         .then(data => {
+          document.getElementById('og-title').content = data.data.attributes.Title;
+          document.getElementById('og-description').content = data.data.attributes.Description;
+          document.getElementById('og-image').content = apiUrl + data.data.attributes.Logo.data.attributes.url;
+          document.getElementById('og-url').content = window.location.href;
           document.getElementById('website-title').innerText = data.data.attributes.Title;
           document.getElementById('website-description').content = data.data.attributes.Description;
           document.getElementById('website-keywords').content = data.data.attributes.Keywords;
