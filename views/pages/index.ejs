@@ -366,7 +366,7 @@
       $("#div" + casino.id + "details").append(
         '<div class="attached ui segment" style="border: 0px;">' +
           '<div class="ui styled four column grid">' +
-          '<div class="eight wide column">' +
+          '<div class="sixteen wide mobile eight wide tablet eight wide computer column">' +
           "<h3>Casino Bonus</h3>" +
           '<ul class="ui list">' +
           casino.attributes.Boni.map(
@@ -393,7 +393,7 @@
                 `
               : '') +
           "</div>" +
-          '<div class="eight wide column">' +
+          '<div class="sixteen wide mobile eight wide tablet eight wide computer column">' +
           '<h3>Casino Features</h3>' +
           '<ul class="ui list">' +
           `${casino.attributes.company.data.attributes.Name
@@ -407,7 +407,7 @@
           ).join('') +
           "</ul>" +
           "</div>" +
-          '<div class="eight wide column">' +
+          '<div class="sixteen wide mobile eight wide tablet eight wide computer column">' +
           "<h3>Common Provider</h3>" +
           '<div class="ui tiny images">' +
             casino.attributes.providers.data
@@ -419,7 +419,7 @@
             .join('') +
           "</div>" +
           "</div>" +
-          '<div class="eight wide column">' +
+          '<div class="sixteen wide mobile eight wide tablet eight wide computer column">' +
           '<h3>Payment Methods</h3>' +
           '<div class="ui tiny images">' +
           casino.attributes.payment_methods.data
@@ -430,7 +430,7 @@
           ).join('') +
           "</div>" +
           (casino.attributes.license.data
-              ? '<div class="eight wide column" style="padding-top:30px">' +
+              ? '<div class="sixteen wide mobile eight wide tablet eight wide computer column" style="padding-top:30px">' +
                 "<h3>License</h3>" +
                 '<div class="ui tiny images">' +
                 '<div class="column"><img class="ui image" src="' +
