@@ -76,10 +76,13 @@
       }
 
       const apiUrl = "https://api.yasarbonus.com";
-
+      
+      // store the data in a global variable for later use
       fetch(`${apiUrl}/api/website?locale=${lang}&populate=*`)
         .then(response => response.json())
         .then(data => {
+                    // save websiteData for later use
+                    window.websiteData = data;
           document.getElementById('og-title').content = data.data.attributes.Title;
           document.getElementById('og-description').content = data.data.attributes.Description;
           document.getElementById('og-image').content = apiUrl + data.data.attributes.Logo.data.attributes.url;

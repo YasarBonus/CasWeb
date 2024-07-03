@@ -82,6 +82,7 @@
       $(".ui.filter.dropdown").on("change", function() {
         useFilters();
       });
+      populateHeader();
     });
 
     function useFilters() {
@@ -491,6 +492,47 @@
 
   <body class="body">
     <div class="ui wide container" style="margin-top: 100px !important; padding-bottom: 100px; padding-left:20px; padding-right:20px;">
+      <div class="ui segment">
+      <div class="ui vertical stripe segment">
+        <div class="ui middle aligned stackable grid container">
+          <div class="row">
+            <div class="eight wide column">
+              <h1 id="indexTitle1" class="ui header"></h1>
+              <p id="indexText1"></p>
+              <!-- h3 id="indexTitle2" class="ui header">We Make Bananas That Can Dance</!-->
+              <!-- p id="indexText2">Yes that's right, you thought it was the stuff of dreams, but even bananas can be bioengineered.</!-->
+            </div>
+            <div class="six wide right floated column">
+              <img id="indexImage" class="ui large bordered rounded image">
+            </div>
+          </div>
+          <!-- div class="row">
+            <div class="center aligned column">
+              <a class="ui huge button">Check Them Out</a>
+            </div>
+          </!-->
+        </div>
+      </div>
+      </div>
+      <script>
+        function populateHeader() { 
+          fetch(`${apiUrl}/api/website?locale=${lang}&populate=*`)
+            .then(response => response.json())
+            .then(data => {
+              console.log("Got website data:", data.data.attributes);
+              document.getElementById('indexTitle1').innerHTML = data.data.attributes.IndexTitle1;
+              document.getElementById('indexText1').innerHTML = data.data.attributes.IndexText1;
+              // document.getElementById('indexTitle2').innerHTML = data.data.attributes.IndexTitle2;
+              // document.getElementById('indexText2').innerHTML = data.data.attributes.IndexText2;
+              document.getElementById('indexImage').src = apiUrl + data.data.attributes.IndexImage.data.attributes.url;
+              
+            })
+            .catch(error => {
+              console.error('Error fetching metadata:', error);
+            });
+        }
+        
+        </script>
       <div class="ui two column stackable grid">
         <div class="sixteen wide mobile sixteen wide tablet four wide computer four wide large screen four wide widescreen column">
           <div class="hide-on-tablet hide-on-computer">
