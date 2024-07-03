@@ -410,31 +410,31 @@
           "</div>" +
           '<div class="eight wide column">' +
           "<h3>Common Provider</h3>" +
-          '<div class="ui six column grid container">' +
+          '<div class="ui tiny images">' +
             casino.attributes.providers.data
             .sort((a, b) => a.attributes.SortOrder - b.attributes.SortOrder)
             .map(
               (provider) =>
-              `<img style="max-height:40px;padding-top:20px" src="${apiUrl}${provider.attributes.Logo.data.attributes.url}" alt="${provider.attributes.Name}" />`
+              `<img class="ui image" src="${apiUrl}${provider.attributes.Logo.data.attributes.url}" alt="${provider.attributes.Name}" />`
             )
             .join('') +
           "</div>" +
           "</div>" +
           '<div class="eight wide column">' +
           '<h3>Payment Methods</h3>' +
-          '<div class="ui six column grid container">' +
+          '<div class="ui tiny images">' +
           casino.attributes.payment_methods.data
           .sort((a, b) => a.attributes.SortOrder - b.attributes.SortOrder)
           .map(
             (payment_method) =>
-              `<img style="max-height:40px;padding-top:20px" src="${apiUrl}${payment_method.attributes.Logo.data.attributes.url}" alt="${payment_method.attributes.Name}" />`
+              `<img class="ui image" src="${apiUrl}${payment_method.attributes.Logo.data.attributes.url}" alt="${payment_method.attributes.Name}" />`
           ).join('') +
           "</div>" +
           (casino.attributes.license.data
               ? '<div class="eight wide column" style="padding-top:30px">' +
                 "<h3>License</h3>" +
-                '<div class="ui column grid container">' +
-                '<div class="column"><img style="max-width: 100px" src="' +
+                '<div class="ui tiny images">' +
+                '<div class="column"><img class="ui image" src="' +
                 apiUrl +
                 casino.attributes.license.data.attributes.Logo.data.attributes.url +
                 '" alt="" /></div>' +
