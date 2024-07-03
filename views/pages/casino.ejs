@@ -123,13 +123,13 @@
               <div class="sixteen wide tablet eight wide computer column">
                 <div class="ui basic segment">
                 <h2>Provider</h2>
-                <div class="ui six column grid container">
+                <div class="ui tiny images">
                 ` +
                 casino.attributes.providers.data
             .sort((a, b) => a.attributes.SortOrder - b.attributes.SortOrder)
             .map(
               (provider) =>
-              `<img style="max-height:60px;padding-top:20px" src="${apiUrl}${provider.attributes.Logo.data.attributes.url}" alt="${provider.attributes.Name}" />`
+              `<img class="ui image" src="${apiUrl}${provider.attributes.Logo.data.attributes.url}" alt="${provider.attributes.Name}" />`
             )
             .join('')  + `
             </div>
@@ -138,13 +138,13 @@
               <div class="sixteen wide tablet eight wide computer column">
                 <div class="ui basic segment">
                   <h2>Payment Methods</h2>
-                <div class="ui six column grid container">
+                <div class="ui tiny images">
                 ` +
                 casino.attributes.payment_methods.data
           .sort((a, b) => a.attributes.SortOrder - b.attributes.SortOrder)
           .map(
             (payment_method) =>
-              `<img style="max-height:60px;padding-top:20px" src="${apiUrl}${payment_method.attributes.Logo.data.attributes.url}" alt="${payment_method.attributes.Name}" />`
+              `<img class="ui image" src="${apiUrl}${payment_method.attributes.Logo.data.attributes.url}" alt="${payment_method.attributes.Name}" />`
           ).join('')  + `
           </div>
           </div>
