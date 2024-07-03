@@ -6,10 +6,10 @@ const initialDialog = $('#initialDialog');
 checkLastVisit();
 
 function checkLastVisit() {
-    const lastVisit = localStorage.getItem('lastVisit');
+    const lastVisit = localStorage.getItem('lastAgeCheck');
     const daysSinceLastVisit = (currentTimestamp - lastVisit) / (1000 * 60 * 60 * 24);
 
-    if (!lastVisit || daysSinceLastVisit > 7) {
+    if (!lastVisit || daysSinceLastVisit > 1) {
         initialDialog.modal('show');
     } else {
         useFilters();
@@ -17,7 +17,7 @@ function checkLastVisit() {
 }
 
 $('#confirmAge').click(() => {
-    localStorage.setItem('lastVisit', currentTimestamp);
+    localStorage.setItem('lastAgeCheck', currentTimestamp);
     initialDialog.modal('hide');
     useFilters();
 });
