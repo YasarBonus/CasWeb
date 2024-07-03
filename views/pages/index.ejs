@@ -470,14 +470,35 @@
             (textInput);
     }
 
+    // filtersSegment should be hidden on mobile and tablet devices and shown on desktop, update each time the window is resized
+    $(window).resize(function() {
+      if ($(window).width() < 768) {
+        $("#filtersSegment").hide();
+        $("#toggleFiltersButton").show();
+      } else {
+        $("#filtersSegment").show();
+        $("#toggleFiltersButton").hide();
+      }
+    });
+
+    function toggleFilters() {
+      $("#filtersSegment").toggle();
+      // hide the show filters button
+      $("#toggleFiltersButton").hide();
+    }
+
   </script>
 
   <body class="body">
     <div class="ui wide container" style="margin-top: 100px !important; padding-bottom: 100px; padding-left:20px; padding-right:20px;">
       <div class="ui two column stackable grid">
-        <div
-          class="sixteen wide mobile sixteen wide tablet four wide computer four wide large screen four wide widescreen column">
-          <div class="ui segment">
+        <div class="sixteen wide mobile sixteen wide tablet four wide computer four wide large screen four wide widescreen column">
+          <div class="hide-on-tablet hide-on-computer">
+          <div id="toggleFiltersButton" class="ui center aligned segment">
+            <div class="ui center aligned button" onClick="toggleFilters()">Show Filters</div>
+          </div>
+        </div>
+            <div id="filtersSegment" class="ui segment">
             <div class="ui container grid filter">
               <div
                 class="sixteen wide mobile eight wide tablet sixteen wide computer column"
