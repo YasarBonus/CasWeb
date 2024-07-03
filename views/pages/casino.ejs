@@ -29,13 +29,38 @@
         document.getElementById('casino-container').innerHTML = `
           <div class="ui two column centered grid">
             <div class="row">
-              <div class="eight wide center aligned column"><h1>${casino.attributes.Name} Casino Review</h1><a href="/go/${casino.attributes.Slug}" target="_blank" class="ui massive green button">PLAY NOW</a></div>
-              <div class="six wide column"><img src="${apiUrl}${casino.attributes.Logo.data.attributes.url}"></div>
-              
+              <div class="sixteen wide tablet eight wide computer middle aligned column">
+                <h1>${casino.attributes.Name} Casino Review</h1>`+ 
+                (casino.attributes.EgonsReview !== null
+              ? 
+                `<div class="ui basic left aligned segment">
+                  <div class="ui comments">
+  <div class="comment">
+    <a class="avatar">
+      <img src="/images/Egon.png" />
+    </a>
+    <div class="content">
+      <a class="author">${casino.attributes.EgonsReview.Title}</a>
+      <div class="text">
+        ${casino.attributes.EgonsReview.Description[0].children[0].text}
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+                `
+              : '') + `</div>
+              <div class="sixteen wide tablet six wide computer middle aligned column"><img src="${apiUrl}${casino.attributes.Logo.data.attributes.url}"></div>
             </div>
             <div class="center aligned row">
-            <div class="sixteen wide center aligned column">
-                <div class="ui four statistics">
+              <div class="ui basic segment">
+                <a href="/go/${casino.attributes.Slug}" target="_blank" class="ui massive green button">PLAY NOW</a>
+              </div>
+            </div>
+            <div class="center aligned row">
+            <div class="sixteen wide column">
+                            <div class="ui basic segment">
+                <div class="ui two statistics">
   <div class="statistic">
     <div class="value">
       ${casino.attributes.Boni[0].Percent} %
@@ -71,39 +96,65 @@
 </div>
               </div>
               </div>
-              <div class="eight wide column"><h2>Casino Bonus</h2>
-                ` +
-                casino.attributes.Boni.map(
-            (bonus) => `<div class="item">${bonus.Percent}% up to ${bonus.upTo} € ${bonus.Freespins ? ` <i>+ ${bonus.Freespins} Freespins` : ''} ${bonus.PromoCode ? ` Code: ${bonus.PromoCode}` : ''}</i></div>`
-          ).join('') + `
               </div>
-              <div class="eight wide column"><h2>Casino Features</h2>
+                          <div class="row">
+
+              <div class="sixteen wide mobile eight wide computer column">
+                <div class="ui basic left aligned segment">
+                  <h2>Casino Bonus</h2>
+                <div class="ui relaxed devided list">` +
+                casino.attributes.Boni.map(
+            (bonus) => `<div class="item"><i class="large caret right middle aligned icon"></i><div class="content"><div class="header">${bonus.Percent}% up to ${bonus.upTo} €</div><div class="description">${bonus.Freespins ? ` <i>+ ${bonus.Freespins} Freespins` : ''} ${bonus.PromoCode ? ` Code: ${bonus.PromoCode}` : ''}</i></div></div></div>`
+          ).join('') + `
+                </div>
+                </div>
+              </div>
+
+              <div class="sixteen wide mobile eight wide computer column">
+                <div class="ui basic left aligned segment">
+                <h2>Casino Features</h2>
+                <div class="ui relaxed devided list">
                 ` +
                 casino.attributes.features.data.map(
-            (feature) => `<div class="item"><img width="12px" src="${apiUrl}${feature.attributes.icon.data.attributes.Image.data.attributes.url}" /> ${feature.attributes.Name}</div>`
+            (feature) => `<div class="item"><div class="ui mini image"><img src="${apiUrl}${feature.attributes.icon.data.attributes.Image.data.attributes.url}" /></div><div class="content"><div class="header">${feature.attributes.Name}</div></div></div>`
           ).join('')  + `
+                </div>
+              </div>
+              </div>
+            </div>
+              
+            <div class="row">
+              <div class="sixteen wide tablet eight wide computer column">
+                <div class="ui basic segment">
+                <h2>Provider</h2>
+                <div class="ui six column grid container">
+                ` +
+                casino.attributes.providers.data
+            .sort((a, b) => a.attributes.SortOrder - b.attributes.SortOrder)
+            .map(
+              (provider) =>
+              `<img style="max-height:60px;padding-top:20px" src="${apiUrl}${provider.attributes.Logo.data.attributes.url}" alt="${provider.attributes.Name}" />`
+            )
+            .join('')  + `
+            </div>
+            </div>
+              </div>
+              <div class="sixteen wide tablet eight wide computer column">
+                <div class="ui basic segment">
+                  <h2>Payment Methods</h2>
+                <div class="ui six column grid container">
+                ` +
+                casino.attributes.payment_methods.data
+          .sort((a, b) => a.attributes.SortOrder - b.attributes.SortOrder)
+          .map(
+            (payment_method) =>
+              `<img style="max-height:60px;padding-top:20px" src="${apiUrl}${payment_method.attributes.Logo.data.attributes.url}" alt="${payment_method.attributes.Name}" />`
+          ).join('')  + `
+          </div>
+          </div>
+          </div>
               </div>
               <div class="row">
-              <div class="eight wide column">` +
-          (casino.attributes.EgonsReview !== null
-              ? 
-              `<h2>Egon's Review</h2>` +
-                `
-                  <div class="ui comments">
-  <div class="comment">
-    <a class="avatar">
-      <img src="/images/Egon.png" />
-    </a>
-    <div class="content">
-      <a class="author">${casino.attributes.EgonsReview.Title}</a>
-      <div class="text">
-        ${casino.attributes.EgonsReview.Description[0].children[0].text}
-      </div>
-    </div>
-  </div>
-</div>
-                `
-              : '') + `</div>
               <div class="six wide column">` +
           (casino.attributes.license.data
               ? '<div class="eight wide column" style="padding-top:30px">' +
@@ -117,32 +168,6 @@
                 '</div>'
               : '') + `</div>
             </div>
-              <div class="eight wide column"><h2>Provider</h2>
-                <div class="ui six column grid container">
-                ` +
-                casino.attributes.providers.data
-            .sort((a, b) => a.attributes.SortOrder - b.attributes.SortOrder)
-            .map(
-              (provider) =>
-              `<img style="max-height:60px;padding-top:20px" src="${apiUrl}${provider.attributes.Logo.data.attributes.url}" alt="${provider.attributes.Name}" />`
-            )
-            .join('')  + `
-            </div>
-              </div>
-              <div class="eight wide column"><h2>Payment Methods</h2>
-                <div class="ui six column grid container">
-                ` +
-                casino.attributes.payment_methods.data
-          .sort((a, b) => a.attributes.SortOrder - b.attributes.SortOrder)
-          .map(
-            (payment_method) =>
-              `<img style="max-height:60px;padding-top:20px" src="${apiUrl}${payment_method.attributes.Logo.data.attributes.url}" alt="${payment_method.attributes.Name}" />`
-          ).join('')  + `
-          </div>
-              </div>
-          <div class="ui two column centered grid">
-            
-          </div>
         `;
       })
       .catch(error => {
