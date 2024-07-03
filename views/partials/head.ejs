@@ -56,6 +56,13 @@
           '<a class="item" onclick="setLanguage(\'de\')"><span class="fi fi-de"></span> Deutsch</a>' +
           '</div>'
           ;
+
+          document.getElementById('languageMobileMenu').innerHTML = '<span class="fi fi-' + flag + '"></span>' +
+          '<div class="menu">' +
+          '<a class="item" onclick="setLanguage(\'en\')"><span class="fi fi-gb"></span> English</a>' +
+          '<a class="item" onclick="setLanguage(\'de\')"><span class="fi fi-de"></span> Deutsch</a>' +
+          '</div>'
+          ;
       });
 
       function setLanguage(lang) {
@@ -74,6 +81,8 @@
           document.getElementById('website-favicon').href = apiUrl + data.data.attributes.Favicon.data.attributes.url;
           document.getElementById('website-logo').src = apiUrl + data.data.attributes.Logo.data.attributes.url;
           document.getElementById('website-name').innerText = data.data.attributes.Name;
+          document.getElementById('website-mobile-name').innerText = data.data.attributes.Name;
+          document.getElementById('website-mobile-logo').src = apiUrl + data.data.attributes.Logo.data.attributes.url;
           // load custom CSS
           if (data.data.attributes.CustomCSS) {
           document.head.innerHTML += '<style>' + data.data.attributes.CustomCSS + '</style>';
@@ -83,10 +92,22 @@
             document.getElementById('header-menu-links').innerHTML += '<a href="' + data.data.attributes.Menu[i].Target + '" class="item">' + data.data.attributes.Menu[i].Name + '</a>';
           }
 
+          for (let i = 0; i < data.data.attributes.Menu.length; i++) {
+            document.getElementById('header-menu-mobile-links').innerHTML = '<a href="' + data.data.attributes.Menu[i].Target + '" class="item">' + data.data.attributes.Menu[i].Name + '</a>' + document.getElementById('header-menu-mobile-links').innerHTML;
+          }
+
           for (let i = 0; i < data.data.attributes.SocialLinks.length; i++) {
             // add social links to the beginning of the social menu
             document.getElementById('header-menu-right').innerHTML = '<a href="' + data.data.attributes.SocialLinks[i].Target + '" target="_blank" class="item"><i class="fa-brands fa-' + data.data.attributes.SocialLinks[i].FaBrandsIcon + '"></i></a>' + document.getElementById('header-menu-right').innerHTML;
           }
+
+
+          for (let i = 0; i < data.data.attributes.SocialLinks.length; i++) {
+            // add social links to the beginning of the social menu
+            document.getElementById('header-menu-mobile-right').innerHTML += '<a href="' + data.data.attributes.SocialLinks[i].Target + '" target="_blank" class="item"><i class="fa-brands fa-' + data.data.attributes.SocialLinks[i].FaBrandsIcon + '"></i> ' + data.data.attributes.SocialLinks[i].Name + '</a>';
+          }
+
+
         })
         .catch(error => {
           console.error('Error fetching metadata:', error);

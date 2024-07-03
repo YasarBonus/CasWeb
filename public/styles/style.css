@@ -1,3 +1,45 @@
+/** classes to hide elements on mobile, tables or computer **/
+
+@media only screen and (max-width: 768px) {
+  .hide-on-mobile {
+    display: none;
+  }
+}
+
+@media only screen and (min-width: 769px) and (max-width: 1024px) {
+  .hide-on-tablet {
+    display: none;
+  }
+}
+
+@media only screen and (min-width: 1025px) {
+  .hide-on-computer {
+    display: none;
+  }
+}
+
+/** classes to show elements on mobile, tables or computer **/
+
+@media only screen and (max-width: 768px) {
+  .show-on-mobile {
+    display: block;
+  }
+}
+
+@media only screen and (min-width: 769px) and (max-width: 1024px) {
+  .show-on-tablet {
+    display: block;
+  }
+}
+
+@media only screen and (min-width: 1025px) {
+  .show-on-computer {
+    display: block;
+  }
+}
+
+
+
 .ui .segment {
   background-color: beige;
 }
