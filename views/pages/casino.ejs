@@ -56,11 +56,6 @@
               <div class="sixteen wide tablet six wide computer middle aligned column"><img src="${apiUrl}${casino.attributes.Logo.data.attributes.url}"></div>
             </div>
             <div class="center aligned row">
-              <div class="ui basic segment">
-                <a href="/go/${casino.attributes.Slug}" target="_blank" class="ui massive green button">PLAY NOW</a>
-              </div>
-            </div>
-            <div class="center aligned row">
               <div class="ui basic segment">` +
                 // for each entry in casino.attributes.features.data that has attributes.Label not null, create a label
                 casino.attributes.features.data
@@ -111,6 +106,11 @@
   </div>
               </div>
               </div>
+                          <div class="center aligned row">
+              <div class="ui basic segment">
+                <a href="/go/${casino.attributes.Slug}" target="_blank" class="ui massive green button">PLAY NOW</a>
+              </div>
+            </div>
                           <div class="row">
 
               <div class="sixteen wide mobile eight wide tablet eight wide computer column">
