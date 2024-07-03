@@ -138,6 +138,33 @@ app.get('/casino/:slug', (req, res) => {
     });
 });
 
+// custom pages at /:slug
+app.get('/:slug', (req, res) => {
+  const slug = req.params.slug;
+
+  // fetch the page from the API
+  fetch(`https://api.yasarbonus.com/api/custom-pages?filters[Slug][$eq][0]=${slug}`)
+    .then(response => response.json())
+    .then(data => {
+      console.log("Api Response:" + data);
+      // check if the page exists
+      if (data.data.length > 0) {
+        // render the page with the page data
+        res.render('pages/page', {
+          page: data.data[0],
+        });
+      } else {
+        // if the page does not exist, return a 404 error
+        res.status(404).send('404 - Page not found');
+      }
+    })
+    .catch(error => {
+      console.error(error);
+      // return a 500 error if there was an error fetching the page
+      res.status(500).send('500 - Internal Server Error');
+    });
+});
+
 // 301 Redirect
 app.get('/casinos', (req, res) => {
   res.redirect(301, '/');
