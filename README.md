@@ -127,6 +127,6 @@ Use this: https://docs.strapi.io/dev-docs/api/rest/interactive-query-builder
       fields: ['Title', 'Description']
     }
   },
-  fields: ['Name'],
+  fields: ['Name', 'Label'],
 }
 ```
