@@ -55,7 +55,7 @@ Use this: https://docs.strapi.io/dev-docs/api/rest/interactive-query-builder
       fields: ['url']
     }
   },
-  fields: ['Name', 'MaxBet', 'Wager', 'WagerType', 'Label', 'Slug', 'MaxCashout', 'SortOrder'],
+  fields: ['Name', 'MaxBet', 'Wager', 'WagerType', 'Label', 'Slug', 'MaxCashout', 'SortOrder', 'isNew'],
 }
 ```
 
