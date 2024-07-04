@@ -38,7 +38,10 @@
   }
 }
 
-
+.ui.comments .comment .avatar img, .ui.comments .comment img.avatar {
+  width: 40px;
+  height: 40px;
+}
 
 .ui .segment {
   background-color: beige;
@@ -92,8 +95,8 @@
 }
 
 .bonustext {
-  font-size: 2rem;
-  font-weight: bold;
+  font-size: 2.2rem;
+  font-weight: 600;
 }
 
 .bonushead {
