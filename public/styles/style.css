@@ -43,6 +43,10 @@
   height: 40px;
 }
 
+.ui.menu .item::before {
+  width: 0;
+}
+
 .ui .segment {
   background-color: beige;
 }
