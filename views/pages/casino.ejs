@@ -33,7 +33,7 @@
           <div class="ui two column centered grid">
             <div class="row">
               <div class="sixteen wide tablet eight wide computer middle aligned column">
-                <h1>${casino.attributes.Name} Casino Review</h1>`+ 
+                <h1 class="ui header">${casino.attributes.Name} Casino Review</h1>`+ 
                 (casino.attributes.EgonsReview !== null
               ? 
                 `<div class="ui basic left aligned segment">
@@ -115,7 +115,7 @@
 
               <div class="sixteen wide mobile eight wide tablet eight wide computer column">
                 <div class="ui basic left aligned segment">
-                  <h2>Casino Bonus</h2>
+                  <h2 class="ui header">Casino Bonus</h2>
                 <div class="ui relaxed devided list">` +
                 casino.attributes.Boni.map(
             (bonus) => `<div class="item"><i class="large caret right middle aligned icon"></i><div class="content"><div class="header">${bonus.Percent}% up to ${bonus.upTo} €</div><div class="description">${bonus.Freespins ? ` <i>+ ${bonus.Freespins} Freespins` : ''} ${bonus.PromoCode ? ` Code: ${bonus.PromoCode}` : ''}</i></div></div></div>`
@@ -126,7 +126,7 @@
 
               <div class="sixteen wide mobile eight wide tablet eight wide computer column">
                 <div class="ui basic left aligned segment">
-                <h2>Casino Features</h2>
+                <h2 class="ui header">Casino Features</h2>
                 <div class="ui relaxed devided list">
                   <div class="item"><i class="large building icon"></i><div class="content"><div class="header">${casino.attributes.company.data.attributes.Name}</div></div></div>
                 ` +
@@ -141,7 +141,7 @@
             <div class="row">
               <div class="sixteen wide tablet eight wide computer column">
                 <div class="ui basic segment">
-                <h2>Provider</h2>
+                <h2 class="ui header">Provider</h2>
                 <div class="ui tiny images">
                 ` +
                 casino.attributes.providers.data
@@ -156,7 +156,7 @@
               </div>
               <div class="sixteen wide tablet eight wide computer column">
                 <div class="ui basic segment">
-                  <h2>Payment Methods</h2>
+                  <h2 class="ui header">Payment Methods</h2>
                 <div class="ui tiny images">
                 ` +
                 casino.attributes.payment_methods.data
@@ -169,6 +169,41 @@
           </div>
           </div>
               </div>
+              <div class="bottom aligned row">
+                <div class="sixteen wide tablet five wide computer center aligned column">
+                <div class="ui basic segment">
+                  <h2 class="ui header">Calculate your Bonus</h2>
+                                      <div class="ui huge icon input">
+                      <i class="euro icon"></i>
+                      <input id="depositInput" onInput="calculateBonus();" type="text" placeholder="Deposit Amount">
+                    </div>
+              </div>
+              </div>
+          <div class="sixteen wide tablet eleven wide computer center aligned column">
+                          <div class="ui basic center aligned segment">
+            <div class="ui statistic">
+              <div id="calculated-deposit-amount" class="value">-</div>
+              <div class="label">
+                Deposit
+              </div>
+            </div>
+            <div class="ui statistic">
+              <div id="calculated-bonus-amount" class="value">-</div>
+              <div class="label">
+                Bonus
+              </div>
+            </div>
+            <div class="ui statistic">
+              <div id="calculated-wager-amount" class="value">-</div>
+              <div class="label">
+                Wager (${casino.attributes.WagerType})
+              </div>
+            </div>
+                          <p id="calculated-requirements-text">You need to deposit at least ${casino.attributes.Boni[0].upTo / (casino.attributes.Boni[0].Percent / 100)}€ to get the maximum bonus of ${casino.attributes.Boni[0].upTo}€.</p>
+
+              </div>
+
+              </div>
               
                 ` +
                 (casino.attributes.Media && casino.attributes.Media.data
@@ -178,7 +213,7 @@
                 <div class="sixteen wide tablet eight wide computer column">
                 <div class="ui basic segment">
                 <div class="ui divider"></div>
-                <div class="ui small images">
+                <div class="ui tiny images">
                   ` 
                   + casino.attributes.Media.data
                     .map(
@@ -204,7 +239,7 @@
               <div class="six wide column">` +
           (casino.attributes.license.data
               ? '<div class="eight wide column" style="padding-top:30px">' +
-                "<h2>License</h2>" +
+                "<h2 class='ui header'>License</h2>" +
                 '<div class="ui column grid container">' +
                 '<div class="column"><img style="max-width: 100px" src="' +
                 apiUrl +
@@ -219,6 +254,7 @@
       .catch(error => {
         console.error('Error fetching casino:', error);
       });
+      calculateBonus();
     }
     
     // function that will enlarge the media when clicked
@@ -226,8 +262,9 @@
       const modal = document.createElement('div');
       modal.classList.add('ui', 'basic', 'modal');
       modal.innerHTML = `
-        <div class="image content">
-          <img src="${url}" class="ui image">
+        <div class="content">
+          <div class="image content">
+          <img src="${url}" class="ui centered medium image">
         </div>
       `;
       document.body.appendChild(modal);
@@ -246,6 +283,94 @@
       });
     }
 
+    // function to calculate the bonus amount, deposit amount and wager amount
+
+    function calculateBonus(deposit, bonusPercentage, maxBonus, wagerMultiplier, wagerType) {
+    // Get input values
+    deposit = parseFloat(document.getElementById("depositInput").value);
+    // set default values from casino data
+    bonusPercentage = casino.attributes.Boni[0].Percent;
+    console.log("bonusPercentage", bonusPercentage);
+    maxBonus = casino.attributes.Boni[0].upTo;
+    wagerMultiplier = casino.attributes.Wager;
+    wagerType = casino.attributes.WagerType;
+
+
+    // Calculate bonus amount
+    console.log("deposit", deposit);
+    let bonusAmount = Math.min(deposit * (bonusPercentage / 100), maxBonus);
+
+    // Calculate total deposit amount
+    let totalDepositAmount = deposit + bonusAmount;
+    // if (wagerType === "sticky") {
+    //     totalDepositAmount = deposit + bonusAmount;
+    // } else {
+    //     totalDepositAmount = deposit;
+    // }
+
+    // Calculate wagering requirement
+    let wagerAmount;
+    if (wagerType === "B") {
+        wagerAmount = wagerMultiplier * bonusAmount;
+    } else if (wagerType === "D+B") {
+        wagerAmount = wagerMultiplier * (deposit + bonusAmount);
+    }
+    console.log("bonusAmount", bonusAmount);
+    console.log("totalDepositAmount", totalDepositAmount);
+    console.log("wagerAmount", wagerAmount);
+
+    // round the values up to the next integer
+    totalDepositAmount = Math.ceil(totalDepositAmount);
+    bonusAmount = Math.ceil(bonusAmount);
+    wagerAmount = Math.ceil(wagerAmount);
+
+
+    // if the values are not numbers, set them to -
+    if (isNaN(totalDepositAmount)) {
+        totalDepositAmount = "-";
+    } else {
+        totalDepositAmount = totalDepositAmount + "€";
+    }
+    if (isNaN(bonusAmount)) {
+        bonusAmount = "-";
+    } else {
+        bonusAmount = bonusAmount + "€";
+    }
+    if (isNaN(wagerAmount)) {
+        wagerAmount = "-";
+    } else {
+        wagerAmount = wagerAmount + "€";
+    }
+
+    // calculate the deposit needed to reach the wagering requirement
+    let wagerDeposit = wagerAmount / wagerMultiplier;
+    let wagerRequirement = wagerAmount;
+
+    // calculate the deposit needed to reach the maximum bonus
+    let maxBonusDeposit = maxBonus / (bonusPercentage / 100);
+    
+    // Set the calculated values in the DOM elements with the respective IDs
+        document.getElementById("calculated-deposit-amount").innerText = totalDepositAmount;
+        document.getElementById("calculated-bonus-amount").innerText = bonusAmount;
+        document.getElementById("calculated-wager-amount").innerText = wagerAmount;
+        if (wagerRequirement === "-") {
+            document.getElementById("calculated-requirements-text").innerHTML = `You need to deposit at least ${maxBonusDeposit}€ to get the maximum bonus of ${maxBonus}€.`;
+        } else {
+            document.getElementById("calculated-requirements-text").innerHTML = `You need to deposit at least ${maxBonusDeposit}€ to get the maximum bonus of ${maxBonus}€.`;
+
+        }
+
+        // add explenantion of the calculation
+
+
+    return {
+        depositAmount: totalDepositAmount,
+        bonusAmount: bonusAmount,
+        wagerAmount: wagerAmount
+    };
+
+
+}
 </script>
 
 <%- include('../partials/footer') %>
