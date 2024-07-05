@@ -2,6 +2,15 @@
   <%- include('../partials/head') %> <%- include('../partials/header') %>
   <script>
 
+document.addEventListener('DOMContentLoaded', function() {
+      // listen to changes in any of the dropdown filters
+      $(".ui.filter.dropdown").on("change", function() {
+        useFilters();
+      });
+      fetchFiltersData();
+      populateHeader();
+    });
+
     function fetchFiltersData() {
       console.log("fetching filters data");
       $.ajax({
@@ -79,115 +88,6 @@
       });
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
-      // listen to changes in any of the dropdown filters
-      $(".ui.filter.dropdown").on("change", function() {
-        useFilters();
-      });
-      fetchFiltersData();
-      populateHeader();
-    });
-
-    function useFilters() {
-      $('#fetchingIndicator').show();
-      console.log("using filters...");
-
-      var dropdownFilters = {
-          category: $("#categoryFilter").val(),
-          payment_methods: $("#paymentmethodsFilter").val(),
-          providers: $("#providerFilter").val(),
-          company: $("#companyFilter").val(),
-      };
-
-      // company and category are a single select dropdown, so we need to convert it to an array
-      if (dropdownFilters.company) {
-        dropdownFilters.company = [dropdownFilters.company];
-      }
-
-      if (dropdownFilters.category) {
-        dropdownFilters.category = [dropdownFilters.category];
-      }
-
-      console.log("dropdownFilters:", dropdownFilters);
-
-      var checkboxFilters = {};
-      $("[id^=feature]").each(function() {
-        if ($(this).is(":checked")) {
-          var featureId = $(this).attr("id").replace("feature", "");
-          if (!checkboxFilters.features) {
-        checkboxFilters.features = [];
-          }
-          checkboxFilters.features.push(featureId);
-        }
-      });
-
-      $("[id^=tag]").each(function() {
-        if ($(this).is(":checked")) {
-          var tagId = $(this).attr("id").replace("tag", "");
-          if (!checkboxFilters.tags) {
-        checkboxFilters.tags = [];
-          }
-          checkboxFilters.tags.push(tagId);
-        }
-      });
-
-      console.log("checkboxFilters:", checkboxFilters);
-
-      // bonus filter
-      var bonusFilter = $("#bonusFilter").slider("get value");
-      console.log("bonusFilter:", bonusFilter);
-
-      const filters = {
-          ...dropdownFilters,
-          ...checkboxFilters,
-      };
-
-      console.log("filters:", filters);
-
-      // build the filter string to be passed to the API.
-      // e.g. "?filters[payment_methods][$eq][0]=1&filters[payment_methods][$eq][1]=2&[category][$eq][0]=1"
-      // if the filter is a feature, it should be "?filters[features][$in][0]=1&filters[$and][features][$in][1]=2" (note that ONLY starting from the second feature, the filter should be [$and][0][features][$in][1]=2)
-      // for the bonus filter, it should check if there is any bonus that is min or greater than the minimum bonus
-      let filterString = "";
-      Object.keys(filters).forEach((key) => {
-        if (filters[key]) {
-          if (key === "features") {
-            filters[key].forEach((value, index) => {
-              if (index === 0) {
-                filterString += `&filters[${key}][$in][${index}]=${value}`;
-              } else {
-                filterString += `&filters[$and][0][${key}][$in][${index}]=${value}`;
-              }
-            });
-          } else {
-            filters[key].forEach((value, index) => {
-              filterString += `&filters[${key}][$eq][${index}]=${value}`;
-            });
-          }
-        }
-      });
-
-      // Implementing the bonusFilter
-      if (bonusFilter && bonusFilter > 0) { // Check if bonusFilter has a value greater than 0
-          // Append the bonusFilter condition to the filterString
-          // Assuming the API has a 'bonus' field to filter on
-          filterString += `&filters[MaxBoniPercent][$gte]=${bonusFilter}`;
-      }
-      
-      // old code
-      // Object.keys(filters).forEach((key) => {
-      //   if (filters[key]) {
-      //     filters[key].forEach((value, index) => {
-      //       filterString += `&filters[${key}][$eq][${index}]=${value}&`;
-      //     });
-      //   }
-      // });
-
-      console.log("filterString:", filterString);
-      fetchCasinosData(filterString);
-    }
-
-
     function fetchCasinosData(filters) {
       console.log("fetching casinos data");
       $.ajax({
@@ -216,14 +116,14 @@
     function populateCasinos(data) {
       console.log("populating casinos...");
       // clear the response container
-      $("#responseContainer").empty();
+      $("#casinoListContainer").empty();
 
       // sort the casinos by SortOrder
       data.sort((a, b) => a.attributes.SortOrder - b.attributes.SortOrder);
 
       data.forEach(function (casino) {
         console.log("casino features:", casino.attributes.features.data[0].attributes.Label.icon.data);
-        $("#responseContainer").append(
+        $("#casinoListContainer").append(
           `<div class="top attached ui segment" id="casino${casino.id}" style="border:0px">
             <div class="ui styled two column grid" style="">
               <div class="four wide computer only column">
@@ -331,6 +231,105 @@
         );
       });
     $('#fetchingIndicator').hide();
+    }
+
+    function useFilters() {
+      $('#fetchingIndicator').show();
+      console.log("using filters...");
+
+      var dropdownFilters = {
+          category: $("#categoryFilter").val(),
+          payment_methods: $("#paymentmethodsFilter").val(),
+          providers: $("#providerFilter").val(),
+          company: $("#companyFilter").val(),
+      };
+
+      // company and category are a single select dropdown, so we need to convert it to an array
+      if (dropdownFilters.company) {
+        dropdownFilters.company = [dropdownFilters.company];
+      }
+
+      if (dropdownFilters.category) {
+        dropdownFilters.category = [dropdownFilters.category];
+      }
+
+      console.log("dropdownFilters:", dropdownFilters);
+
+      var checkboxFilters = {};
+      $("[id^=feature]").each(function() {
+        if ($(this).is(":checked")) {
+          var featureId = $(this).attr("id").replace("feature", "");
+          if (!checkboxFilters.features) {
+        checkboxFilters.features = [];
+          }
+          checkboxFilters.features.push(featureId);
+        }
+      });
+
+      $("[id^=tag]").each(function() {
+        if ($(this).is(":checked")) {
+          var tagId = $(this).attr("id").replace("tag", "");
+          if (!checkboxFilters.tags) {
+        checkboxFilters.tags = [];
+          }
+          checkboxFilters.tags.push(tagId);
+        }
+      });
+
+      console.log("checkboxFilters:", checkboxFilters);
+
+      // bonus filter
+      var bonusFilter = $("#bonusFilter").slider("get value");
+      console.log("bonusFilter:", bonusFilter);
+
+      const filters = {
+          ...dropdownFilters,
+          ...checkboxFilters,
+      };
+
+      console.log("filters:", filters);
+
+      // build the filter string to be passed to the API.
+      // e.g. "?filters[payment_methods][$eq][0]=1&filters[payment_methods][$eq][1]=2&[category][$eq][0]=1"
+      // if the filter is a feature, it should be "?filters[features][$in][0]=1&filters[$and][features][$in][1]=2" (note that ONLY starting from the second feature, the filter should be [$and][0][features][$in][1]=2)
+      // for the bonus filter, it should check if there is any bonus that is min or greater than the minimum bonus
+      let filterString = "";
+      Object.keys(filters).forEach((key) => {
+        if (filters[key]) {
+          if (key === "features") {
+            filters[key].forEach((value, index) => {
+              if (index === 0) {
+                filterString += `&filters[${key}][$in][${index}]=${value}`;
+              } else {
+                filterString += `&filters[$and][0][${key}][$in][${index}]=${value}`;
+              }
+            });
+          } else {
+            filters[key].forEach((value, index) => {
+              filterString += `&filters[${key}][$eq][${index}]=${value}`;
+            });
+          }
+        }
+      });
+
+      // Implementing the bonusFilter
+      if (bonusFilter && bonusFilter > 0) { // Check if bonusFilter has a value greater than 0
+          // Append the bonusFilter condition to the filterString
+          // Assuming the API has a 'bonus' field to filter on
+          filterString += `&filters[MaxBoniPercent][$gte]=${bonusFilter}`;
+      }
+      
+      // old code
+      // Object.keys(filters).forEach((key) => {
+      //   if (filters[key]) {
+      //     filters[key].forEach((value, index) => {
+      //       filterString += `&filters[${key}][$eq][${index}]=${value}&`;
+      //     });
+      //   }
+      // });
+
+      console.log("filterString:", filterString);
+      fetchCasinosData(filterString);
     }
 
     // if details button is clicked, toggle the details div of the casino
@@ -464,7 +463,6 @@
     // if reset filters button is clicked, reset all filters
     function resetFilters() {
       $('#fetchingIndicator').show();
-      console.log("resetting filters...");
       $("#categoryFilter").dropdown("clear");
       $("#paymentmethodsFilter").dropdown("clear");
       $("#providerFilter").dropdown("clear");
@@ -635,7 +633,7 @@
         <div class="sixteen wide mobile sixteen wide tablet twelve wide computer twelve wide large screen twelve wide widescreen column">
           <!-- no casinos found message -->
           <div class="ui icon message" id="noCasinosFound" style="display:none">
-            <i class="user secret icon"></i>
+            <i class="search icon"></i>
             <div class="content">
               <div class="header">No Casinos found</div>
               <p>Try a different filter.</p>
@@ -647,7 +645,7 @@
           <!-- end no casinos found message -->
 
           <!-- casinos list -->
-          <div id="responseContainer">
+          <div id="casinoListContainer">
             
           </div>
         </div>
