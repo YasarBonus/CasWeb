@@ -488,7 +488,7 @@
     // call updateFilterVisibility each time the window is resized by more than 10 pixel
     $(window).resize(function() {
       var windowWidth = $(window).width();
-      if (Math.abs(windowWidth - windowWidth) > 10) {
+      if (Math.abs(windowWidth - windowWidth) > 100) {
         updateFilterVisibility();
       }
     });           
@@ -506,10 +506,17 @@
     });
     }
 
-    function toggleFilters() {
-      $("#filtersSegment").toggle();
-      $("#toggleFiltersButton").toggle();
+    function showFilters() {
+      $("#filtersSegment").show();
+      $("#toggleFiltersButton").hide();
     }
+
+    function hideFilters() {
+      $("#filtersSegment").hide();
+      $("#toggleFiltersButton").show();
+    }
+
+
 
   </script>
 
@@ -569,7 +576,7 @@
         <div class="sixteen wide mobile sixteen wide tablet four wide computer four wide large screen four wide widescreen column">
           <div class="hide-on-tablet hide-on-computer">
           <div id="toggleFiltersButton" class="ui center aligned segment">
-            <div class="ui center aligned button" onClick="toggleFilters()">Show Filters</div>
+            <div class="ui center aligned button" onClick="showFilters()">Show Filters</div>
           </div>
         </div>
             <div id="filtersSegment" class="ui segment">
@@ -626,7 +633,7 @@
               </div>
               <div class="hide-on-tablet hide-on-computer">
                 <div id="toggleFiltersButton" class="ui center aligned basic segment">
-                  <div class="ui center aligned button" onClick="toggleFilters()">Hide Filters</div>
+                  <div class="ui center aligned button" onClick="hideFilters()">Hide Filters</div>
                 </div>
               </div>
               <div class="filteritem" id="resetFiltersBtn" style="display: none">
