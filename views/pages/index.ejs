@@ -485,8 +485,13 @@
             (textInput);
     }
 
-    // call updateFilterVisibility each time the window is resized
-    $(window).resize(updateFilterVisibility);               
+    // call updateFilterVisibility each time the window is resized by more than 10 pixel
+    $(window).resize(function() {
+      var windowWidth = $(window).width();
+      if (Math.abs(windowWidth - windowWidth) > 10) {
+        updateFilterVisibility();
+      }
+    });           
 
     // filtersSegment should be hidden on mobile and tablet devices and shown on desktop, only on load
     function updateFilterVisibility() {
