@@ -485,14 +485,14 @@
             (textInput);
     }
 
-    // filtersSegment should be hidden on mobile and tablet devices and shown on desktop, update each time the window is resized
-    $(window).resize(function() {
+    // filtersSegment should be hidden on mobile and tablet devices and shown on desktop, only on load
+    $(document).ready(function() {
       if ($(window).width() < 768) {
-        $("#filtersSegment").hide();
-        $("#toggleFiltersButton").show();
+      $("#filtersSegment").hide();
+      $("#toggleFiltersButton").show();
       } else {
-        $("#filtersSegment").show();
-        $("#toggleFiltersButton").hide();
+      $("#filtersSegment").show();
+      $("#toggleFiltersButton").hide();
       }
     });
 
