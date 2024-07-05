@@ -485,8 +485,12 @@
             (textInput);
     }
 
+    // call updateFilterVisibility each time the window is resized
+    $(window).resize(updateFilterVisibility);               
+
     // filtersSegment should be hidden on mobile and tablet devices and shown on desktop, only on load
-    $(document).ready(function() {
+    function updateFilterVisibility() {
+      $(document).ready(function() {
       if ($(window).width() < 768) {
       $("#filtersSegment").hide();
       $("#toggleFiltersButton").show();
@@ -495,11 +499,11 @@
       $("#toggleFiltersButton").hide();
       }
     });
+    }
 
     function toggleFilters() {
       $("#filtersSegment").toggle();
-      // hide the show filters button
-      $("#toggleFiltersButton").hide();
+      $("#toggleFiltersButton").toggle();
     }
 
   </script>
@@ -613,6 +617,11 @@
                   <select class="ui fluid search filter dropdown" id="companyFilter">
                     <option value="">None</option>
                   </select>
+                </div>
+              </div>
+              <div class="filteritem hide-on-tablet hide-on-computer">
+                <div id="toggleFiltersButton" class="ui center aligned basic segment">
+                  <div class="ui center aligned button" onClick="toggleFilters()">Hide Filters</div>
                 </div>
               </div>
               <div class="filteritem" id="resetFiltersBtn" style="display: none">
