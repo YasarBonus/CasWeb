@@ -552,7 +552,7 @@
                 console.log('No Twitch Channel Name found');
               } else {
                 document.getElementById('indexImage').style.display = 'none';
-                document.getElementById('twitchEmbed').innerHTML = `<iframe src="https://player.twitch.tv/?channel=${data.data.attributes.TwitchChannelName}&parent=${window.location.hostname}" frameborder="0" allowfullscreen="true" scrolling="no" height="240" width="440"></iframe>`;
+                document.getElementById('twitchEmbed').innerHTML = `<iframe src="https://player.twitch.tv/?channel=${data.data.attributes.TwitchChannelName}&parent=${window.location.hostname}" frameborder="0" allowfullscreen="true" scrolling="no" height="240px" width="100%"></iframe>`;
               }
               
             })
