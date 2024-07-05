@@ -105,6 +105,8 @@
           }
 
           for (let i = 0; i < data.data.attributes.Menu.length; i++) {
+            // change the order of the menu items for the mobile menu
+            data.data.attributes.Menu.reverse();
             document.getElementById('header-menu-mobile-links').innerHTML = '<a href="' + data.data.attributes.Menu[i].Target + '" class="item">' + data.data.attributes.Menu[i].Name + '</a>' + document.getElementById('header-menu-mobile-links').innerHTML;
           }
 
