@@ -170,6 +170,11 @@ app.get('/casinos', (req, res) => {
   res.redirect(301, '/');
 });
 
+// 403 page - load 404.ejs
+app.use((req, res) => {
+  res.status(403).render('pages/error_pages/403');
+});
+
 // 404 page - load 404.ejs
 app.use((req, res) => {
   res.status(404).render('pages/error_pages/404');
