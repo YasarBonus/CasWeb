@@ -380,7 +380,7 @@
           "<h3>Casino Bonus</h3>" +
           '<ul class="ui list">' +
           casino.attributes.Boni.map(
-            (bonus, index) => `<div class="item"><i class="middle aligned large fa-solid fa-${index + 1} icon"></i><div class="content"><div class="header">${bonus.Percent}% up to ${bonus.upTo} €</div><div class="description">${bonus.Freespins ? ` <i>+ ${bonus.Freespins} Freespins` : ''} ${bonus.PromoCode ? ` Code: ${bonus.PromoCode}` : ''}</i></div></div></div>`
+            (bonus) => `<div class="item"><i class="middle aligned large fa-solid fa-arrow-right icon"></i><div class="content"><div class="header">${bonus.Percent}% up to ${bonus.upTo} €</div><div class="description">${bonus.Freespins ? ` <i>+ ${bonus.Freespins} Freespins` : ''} ${bonus.PromoCode ? ` Code: ${bonus.PromoCode}` : ''}</i></div></div></div>`
           ).join('') +
           "</ul>" +
           (casino.attributes.EgonsReview !== null
