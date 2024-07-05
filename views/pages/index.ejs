@@ -496,15 +496,6 @@
       }
     });
 
-    // Recheck window width on window resize
-    $(window).resize(function() {
-      if ($(window).width() < 768) {
-      hideFilters();
-      } else {
-      showFilters();
-      }
-    });
-
     function showFilters() {
       $("#filtersSegment").show();
       $("#toggleFiltersButton").hide();
