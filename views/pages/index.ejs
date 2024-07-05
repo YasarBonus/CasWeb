@@ -484,27 +484,26 @@
         navigator.clipboard.writeText
             (textInput);
     }
+       
 
-    // call updateFilterVisibility each time the window is resized by more than 10 pixel
-    $(window).resize(function() {
-      var windowWidth = $(window).width();
-      if (Math.abs(windowWidth - windowWidth) > 100) {
-        updateFilterVisibility();
-      }
-    });           
-
-    // filtersSegment should be hidden on mobile and tablet devices and shown on desktop, only on load
-    function updateFilterVisibility() {
-      $(document).ready(function() {
+    // filtersSegment should be hidden on mobile and tablet devices and shown on desktop
+    
+    $(document).ready(function() {
       if ($(window).width() < 768) {
-      $("#filtersSegment").hide();
-      $("#toggleFiltersButton").show();
+      hideFilters();
       } else {
-      $("#filtersSegment").show();
-      $("#toggleFiltersButton").hide();
+      showFilters();
       }
     });
-    }
+
+    // Recheck window width on window resize
+    $(window).resize(function() {
+      if ($(window).width() < 768) {
+      hideFilters();
+      } else {
+      showFilters();
+      }
+    });
 
     function showFilters() {
       $("#filtersSegment").show();
