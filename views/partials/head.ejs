@@ -82,43 +82,43 @@
         .then(response => response.json())
         .then(data => {
                     // save websiteData for later use
-                    window.websiteData = data;
-          document.getElementById('og-title').content = data.data.attributes.Title;
-          document.getElementById('og-description').content = data.data.attributes.Description;
-          document.getElementById('og-image').content = apiUrl + data.data.attributes.Logo.data.attributes.url;
+                    window.websiteData = data.data.attributes;
+          document.getElementById('og-title').content = websiteData.Title;
+          document.getElementById('og-description').content = websiteData.Description;
+          document.getElementById('og-image').content = apiUrl + websiteData.Logo.data.attributes.url;
           document.getElementById('og-url').content = window.location.href;
-          document.getElementById('website-title').innerText = data.data.attributes.Title;
-          document.getElementById('website-description').content = data.data.attributes.Description;
-          document.getElementById('website-keywords').content = data.data.attributes.Keywords;
-          document.getElementById('website-favicon').href = apiUrl + data.data.attributes.Favicon.data.attributes.url;
-          document.getElementById('website-logo').src = apiUrl + data.data.attributes.Logo.data.attributes.url;
-          document.getElementById('website-name').innerText = data.data.attributes.Name;
-          document.getElementById('website-mobile-name').innerText = data.data.attributes.Name;
-          document.getElementById('website-mobile-logo').src = apiUrl + data.data.attributes.Logo.data.attributes.url;
+          document.getElementById('website-title').innerText = websiteData.Title;
+          document.getElementById('website-description').content = websiteData.Description;
+          document.getElementById('website-keywords').content = websiteData.Keywords;
+          document.getElementById('website-favicon').href = apiUrl + websiteData.Favicon.data.attributes.url;
+          document.getElementById('website-logo').src = apiUrl + websiteData.Logo.data.attributes.url;
+          document.getElementById('website-name').innerText = websiteData.Name;
+          document.getElementById('website-mobile-name').innerText = websiteData.Name;
+          document.getElementById('website-mobile-logo').src = apiUrl + websiteData.Logo.data.attributes.url;
           // load custom CSS
-          if (data.data.attributes.CustomCSS) {
-          document.head.innerHTML += '<style>' + data.data.attributes.CustomCSS + '</style>';
+          if (websiteData.CustomCSS) {
+          document.head.innerHTML += '<style>' + websiteData.CustomCSS + '</style>';
           }
 
-          for (let i = 0; i < data.data.attributes.Menu.length; i++) {
-            document.getElementById('header-menu-links').innerHTML += '<a href="' + data.data.attributes.Menu[i].Target + '" class="item">' + data.data.attributes.Menu[i].Name + '</a>';
+          for (let i = 0; i < websiteData.Menu.length; i++) {
+            document.getElementById('header-menu-links').innerHTML += '<a href="' + websiteData.Menu[i].Target + '" class="item">' + websiteData.Menu[i].Name + '</a>';
           }
 
-          for (let i = 0; i < data.data.attributes.Menu.length; i++) {
+          for (let i = 0; i < websiteData.Menu.length; i++) {
             // change the order of the menu items for the mobile menu
-            data.data.attributes.Menu.reverse();
-            document.getElementById('header-menu-mobile-links').innerHTML = '<a href="' + data.data.attributes.Menu[i].Target + '" class="item">' + data.data.attributes.Menu[i].Name + '</a>' + document.getElementById('header-menu-mobile-links').innerHTML;
+            websiteData.Menu.reverse();
+            document.getElementById('header-menu-mobile-links').innerHTML = '<a href="' + websiteData.Menu[i].Target + '" class="item">' + websiteData.Menu[i].Name + '</a>' + document.getElementById('header-menu-mobile-links').innerHTML;
           }
 
-          for (let i = 0; i < data.data.attributes.SocialLinks.length; i++) {
+          for (let i = 0; i < websiteData.SocialLinks.length; i++) {
             // add social links to the beginning of the social menu
-            document.getElementById('header-menu-right').innerHTML = '<a href="' + data.data.attributes.SocialLinks[i].Target + '" target="_blank" class="item"><i class="fa-brands fa-' + data.data.attributes.SocialLinks[i].FaBrandsIcon + '"></i></a>' + document.getElementById('header-menu-right').innerHTML;
+            document.getElementById('header-menu-right').innerHTML = '<a href="' + websiteData.SocialLinks[i].Target + '" target="_blank" class="item"><i class="fa-brands fa-' + websiteData.SocialLinks[i].FaBrandsIcon + '"></i></a>' + document.getElementById('header-menu-right').innerHTML;
           }
 
 
-          for (let i = 0; i < data.data.attributes.SocialLinks.length; i++) {
+          for (let i = 0; i < websiteData.SocialLinks.length; i++) {
             // add social links to the beginning of the social menu
-            document.getElementById('header-menu-mobile-right').innerHTML += '<a href="' + data.data.attributes.SocialLinks[i].Target + '" target="_blank" class="item"><i class="fa-brands fa-' + data.data.attributes.SocialLinks[i].FaBrandsIcon + '"></i> ' + data.data.attributes.SocialLinks[i].Name + '</a>';
+            document.getElementById('header-menu-mobile-right').innerHTML += '<a href="' + websiteData.SocialLinks[i].Target + '" target="_blank" class="item"><i class="fa-brands fa-' + websiteData.SocialLinks[i].FaBrandsIcon + '"></i> ' + websiteData.SocialLinks[i].Name + '</a>';
           }
 
 
