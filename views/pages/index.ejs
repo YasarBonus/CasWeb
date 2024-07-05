@@ -518,6 +518,7 @@
             </div>
             <div class="six wide right floated column">
               <img id="indexImage" class="ui large bordered rounded image">
+              <div id="twitchEmbed"></div>
             </div>
           </div>
           <!-- div class="row">
@@ -539,6 +540,14 @@
               // document.getElementById('indexTitle2').innerHTML = data.data.attributes.IndexTitle2;
               // document.getElementById('indexText2').innerHTML = data.data.attributes.IndexText2;
               document.getElementById('indexImage').src = apiUrl + data.data.attributes.IndexImage.data.attributes.url;
+
+              if (data.data.attributes.TwitchChannelName === null) {
+                document.getElementById('twitchEmbed').style.display = 'none';
+                console.log('No Twitch Channel Name found');
+              } else {
+                document.getElementById('indexImage').style.display = 'none';
+                document.getElementById('twitchEmbed').innerHTML = `<iframe src="https://player.twitch.tv/?channel=${data.data.attributes.TwitchChannelName}&parent=${window.location.hostname}" frameborder="0" allowfullscreen="true" scrolling="no" height="240" width="440"></iframe>`;
+              }
               
             })
             .catch(error => {
