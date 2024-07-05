@@ -88,7 +88,7 @@ app.get('/go/:slug', (req, res) => {
 
             } else {
               // if the shortlink and casino do not exist, return a 404 error
-              res.status(404).send('404 - Page not found');
+              res.status(404).render('pages/404');
             }
             
           })
@@ -128,7 +128,7 @@ app.get('/casino/:slug', (req, res) => {
         });
       } else {
         // if the casino does not exist, return a 404 error
-        res.status(404).send('404 - Page not found');
+        res.status(404).render('pages/404');
       }
     })
     .catch(error => {
@@ -155,7 +155,7 @@ app.get('/:slug', (req, res) => {
         });
       } else {
         // if the page does not exist, return a 404 error
-        res.status(404).send('404 - Page not found');
+        res.status(404).render('pages/404');
       }
     })
     .catch(error => {
@@ -170,9 +170,9 @@ app.get('/casinos', (req, res) => {
   res.redirect(301, '/');
 });
 
-// 404 Error
+// 404 page - load 404.ejs
 app.use((req, res) => {
-  res.status(404).send('404 - Page not found');
+  res.status(404).render('pages/404');
 });
 
 // 500 Error
