@@ -88,14 +88,14 @@ app.get('/go/:slug', (req, res) => {
 
             } else {
               // if the shortlink and casino do not exist, return a 404 error
-              res.status(404).render('pages/404');
+              res.status(404).render('pages/error_pages/404');
             }
             
           })
           .catch(error => {
             console.error(error);
             // return a 500 error if there was an error fetching the casino
-            res.status(500).send('500 - Internal Server Error');
+            res.status(500).render('pages/error_pages/500');
           });
 
       }
@@ -103,7 +103,7 @@ app.get('/go/:slug', (req, res) => {
     .catch(error => {
       console.error(error);
       // return a 500 error if there was an error fetching the shortlink
-      res.status(500).send('500 - Internal Server Error');
+      res.status(500).render('pages/error_pages/500');
     });
 });
 
@@ -128,13 +128,13 @@ app.get('/casino/:slug', (req, res) => {
         });
       } else {
         // if the casino does not exist, return a 404 error
-        res.status(404).render('pages/404');
+        res.status(404).render('pages/error_pages/404');
       }
     })
     .catch(error => {
       console.error(error);
       // return a 500 error if there was an error fetching the casino
-      res.status(500).send('500 - Internal Server Error');
+      res.status(500).render('pages/error_pages/500');
     });
 });
 
@@ -155,13 +155,13 @@ app.get('/:slug', (req, res) => {
         });
       } else {
         // if the page does not exist, return a 404 error
-        res.status(404).render('pages/404');
+        res.status(404).render('pages/error_pages/404');
       }
     })
     .catch(error => {
       console.error(error);
       // return a 500 error if there was an error fetching the page
-      res.status(500).send('500 - Internal Server Error');
+      res.status(500).render('pages/error_pages/500');
     });
 });
 
@@ -172,13 +172,13 @@ app.get('/casinos', (req, res) => {
 
 // 404 page - load 404.ejs
 app.use((req, res) => {
-  res.status(404).render('pages/404');
+  res.status(404).render('pages/error_pages/404');
 });
 
 // 500 Error
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).send('500 - Internal Server Error');
+  res.status(500).render('pages/error_pages/500');
 });
 
 // Server starten
