@@ -7,6 +7,18 @@ npm install
 node private/server.js
 ```
 
+## Environment
+
+Create a file named ``.env`` in the project root directory.
+
+Example:
+
+```
+NODE_ENV=development
+API_URL_DEV=https://example.com/api
+API_URL_PROD=https://example.com/api
+```
+
 ## API Urls
 
 Use this: https://docs.strapi.io/dev-docs/api/rest/interactive-query-builder

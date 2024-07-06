@@ -2,6 +2,11 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
+// require dotenv
+require('dotenv').config();
+
+const apiUrl = process.env.NODE_ENV === 'production' ? process.env.API_URL_PROD : process.env.API_URL_DEV;
+
 // Statische Dateien aus dem "public"-Ordner bereitstellen
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
@@ -27,8 +32,6 @@ const matomo = new MatomoTracker(13, 'https://analytics.yasarbonus.com/matomo.ph
 matomo.on('error', function(err) {
   console.log('error tracking request: ', err);
 });
-
-const apiUrl = 'https://api.yasarbonus.com/api';
 
 app.get('/', (req, res) => {
   res.render('pages/index', {
