@@ -19,16 +19,11 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.3/dist/semantic.min.css">
     <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.3/dist/semantic.min.js"></script>
     
-    <link
-  rel="stylesheet"
-  href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css"
-/>
-    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css" />
     <link rel="stylesheet" href="/styles/style.css">
 
     <script src="https://kit.fontawesome.com/a35631f35d.js" crossorigin="anonymous"></script>
 
-    <!-- Matomo -->
     <script>
 
       var userLang = localStorage.getItem('userLang') || navigator.language || navigator.userLanguage;
@@ -81,8 +76,7 @@
       fetch(`${apiUrl}/api/website?locale=${lang}&populate=*`)
         .then(response => response.json())
         .then(data => {
-                    // save websiteData for later use
-                    window.websiteData = data.data.attributes;
+          window.websiteData = data.data.attributes;
           document.getElementById('og-title').content = websiteData.Title;
           document.getElementById('og-description').content = websiteData.Description;
           document.getElementById('og-image').content = apiUrl + websiteData.Logo.data.attributes.url;
@@ -128,7 +122,8 @@
         });
       
     </script>
-    
+  
+  <!-- Matomo -->
   <script>
     var _paq = window._paq = window._paq || [];
     /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
