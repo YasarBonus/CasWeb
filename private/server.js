@@ -28,6 +28,8 @@ matomo.on('error', function(err) {
   console.log('error tracking request: ', err);
 });
 
+const apiUrl = 'https://api.yasarbonus.com/api';
+
 app.get('/', (req, res) => {
   res.render('pages/index', {
       i18n: res
@@ -43,7 +45,7 @@ app.get('/go/:slug', (req, res) => {
   const slug = req.params.slug;
 
   // fetch the shortlink from the API
-  fetch(`https://api.yasarbonus.com/api/shortlinks?populate=*&filters[Slug][$eq][0]=${slug}`)
+  fetch(apiUrl + `/shortlinks?populate=*&filters[Slug][$eq][0]=${slug}`)
     .then(response => response.json())
     .then(data => {
       // check if the shortlink exists
@@ -63,7 +65,7 @@ app.get('/go/:slug', (req, res) => {
         });
       } else {
         // check if there is a casino with the slug
-        fetch(`https://api.yasarbonus.com/api/casinos?fields[0]=Slug&pagination[pageSize]=500&fields[1]=affiliateUrl&fields[2]=Name`)
+        fetch(apiUrl + `/casinos?fields[0]=Slug&pagination[pageSize]=500&fields[1]=affiliateUrl&fields[2]=Name`)
           .then(response => response.json())
           .then(data => {
             console.log("Api Response:" + data.data);
@@ -112,7 +114,7 @@ app.get('/casino/:slug', (req, res) => {
   const slug = req.params.slug;
 
   // fetch the casino from the API
-  fetch(`https://api.yasarbonus.com/api/casinos?fields[0]=Slug&pagination[pageSize]=500&fields[1]=Name&fields[2]=id`)
+  fetch(apiUrl + `/casinos?fields[0]=Slug&pagination[pageSize]=500&fields[1]=Name&fields[2]=id`)
     .then(response => response.json())
     .then(data => {
       console.log("Api Response:" + data.data);
@@ -143,7 +145,7 @@ app.get('/:slug', (req, res) => {
   const slug = req.params.slug;
 
   // fetch the page from the API
-  fetch(`https://api.yasarbonus.com/api/custom-pages?filters[Slug][$eq][0]=${slug}`)
+  fetch(apiUrl + `/custom-pages?filters[Slug][$eq][0]=${slug}`)
     .then(response => response.json())
     .then(data => {
       console.log("Api Response:" + data);
