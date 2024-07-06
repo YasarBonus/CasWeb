@@ -1,80 +1,74 @@
 <!DOCTYPE html>
 <html>
-  <%- include('../partials/head') %>
-  <%- include('../partials/header') %>
+  <%- include('../partials/head') %> <%- include('../partials/header') %>
   <style>
     body {
-padding: 1em;
-}
-.ui.accordion .active.title > .plus.icon,
-.ui.accordion .title:not(.active) > .minus.icon {
-display: none;
-}
-
+      padding: 1em;
+    }
+    .ui.accordion .active.title > .plus.icon,
+    .ui.accordion .title:not(.active) > .minus.icon {
+      display: none;
+    }
   </style>
 
-<body class="body">
-  <div class="ui container"style="margin-top: 100px !important; padding-bottom: 100px;">
-    <div class="ui segment" >
-      <h1>Casino FAQ</h1>
-      
-      <script>
-        $('.ui.segment').accordion({
-	exclusive: false
-})
-      </script>
-      <div class="ui accordion">
-        <div id="faq-container"></div>
-      </div>
-      
+  <body class="body">
+    <div class="ui container" style="margin-top: 100px !important; padding-bottom: 100px">
+      <div class="ui segment">
+        <h1>Casino FAQ</h1>
+
+        <script>
+          $(".ui.segment").accordion({
+            exclusive: false,
+          });
+        </script>
+        <div class="ui accordion">
+          <div id="faq-container"></div>
+        </div>
 
         <script>
           // Fetch the FAQ data from the API URL
           fetch(`${apiUrl}/api/faqs?locale=${lang}&populate=*`)
-            .then(response => response.json())
-            .then(data => {
-              // Generate the HTML content for the FAQ
+            .then((response) => response.json())
+            .then((data) => {
               console.log(data);
-              const faqContainer = document.getElementById('faq-container');
+              // Sort the FAQ items by their SortOrder
+              data.data.sort((a, b) => a.attributes.SortOrder - b.attributes.SortOrder);
+              // Generate the HTML content for the FAQ
+              const faqContainer = document.getElementById("faq-container");
               const faqHTML = generateFAQHTML(data);
               faqContainer.innerHTML = faqHTML;
             })
-            .catch(error => {
-              console.error('Error fetching FAQ:', error);
+            .catch((error) => {
+              console.error("Error fetching FAQ:", error);
             });
 
           // Function to generate the HTML content for the FAQ
           function generateFAQHTML(faqData) {
-            let html = '';
+            let html = "";
 
             // Iterate over each FAQ item
-            faqData.data.forEach(item => {
+            faqData.data.forEach((item) => {
               console.log(item);
               html += `
               <div class="ui segment">
-          <div class="title" style="font-size:1.3em">
-            <i class="plus icon"></i>
-            <i class="minus icon"></i>
-            ${item.attributes.Title}
-          </div>
-          <div class="content" style="font-size:1.1em">
-            <p>${item.attributes.Description}</p>
-          </div>
-        </div>
+                <div class="title" style="font-size:1.3em">
+                  <i class="plus icon"></i>
+                  <i class="minus icon"></i>
+                  ${item.attributes.Title}
+                </div>
+                <div class="content" style="font-size:1.1em">
+                  <p>${item.attributes.Description}</p>
+                </div>
+              </div>
               `;
             });
 
             return html;
           }
         </script>
-
-
-
+      </div>
     </div>
-</div>
+  </body>
 
-</body>
-
-<%- include('../partials/footer') %>
-
+  <%- include('../partials/footer') %>
 </html>
