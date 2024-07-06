@@ -1,143 +1,178 @@
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link id="website-favicon" rel="icon" type="image/png">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <link id="website-favicon" rel="icon" type="image/png" />
 
-    <title id="website-title"></title>
-    <meta id="website-description" name="description">
-    <meta id="website-keywords" name="keywords">
+  <title id="website-title"></title>
+  <meta id="website-description" name="description" />
+  <meta id="website-keywords" name="keywords" />
 
-    <!-- Open Graph Meta Tags -->
-    <meta id="og-title" property="og:title">
-    <meta id="og-description" property="og:description">
-    <meta id="og-image" property="og:image">
-    <meta id="og-url" property="og:url">
-    <meta property="og:type" content="website">
+  <!-- Open Graph Meta Tags -->
+  <meta id="og-title" property="og:title" />
+  <meta id="og-description" property="og:description" />
+  <meta id="og-image" property="og:image" />
+  <meta id="og-url" property="og:url" />
+  <meta property="og:type" content="website" />
 
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.3/dist/semantic.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.3/dist/semantic.min.js"></script>
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css" />
-    <link rel="stylesheet" href="/styles/style.css">
+  <link
+    rel="stylesheet"
+    type="text/css"
+    href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.3/dist/semantic.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.3/dist/semantic.min.js"></script>
 
-    <script src="https://kit.fontawesome.com/a35631f35d.js" crossorigin="anonymous"></script>
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css" />
+  <link rel="stylesheet" href="/styles/style.css" />
 
-    <script>
+  <script src="https://kit.fontawesome.com/a35631f35d.js" crossorigin="anonymous"></script>
 
-      var userLang = localStorage.getItem('userLang') || navigator.language || navigator.userLanguage;
-      console.log('User language:', userLang);
+  <script>
+    var userLang = localStorage.getItem("userLang") || navigator.language || navigator.userLanguage;
+    console.log("User language:", userLang);
 
-      // values here have been changed as long as we do not have german content.
-      // german users will see the english version of the website
-      if (!localStorage.getItem('lang')) {
-        if (userLang.includes('de')) {
-          localStorage.setItem('lang', 'en'); // de
-          var lang = 'en'; // de
-          var flag = 'gb'; // de
-        } else {
-          localStorage.setItem('lang', 'en');
-          var lang = 'en';
-          var flag = 'gb';
-        }
+    // values here have been changed as long as we do not have german content.
+    // german users will see the english version of the website
+    if (!localStorage.getItem("lang")) {
+      if (userLang.includes("de")) {
+        localStorage.setItem("lang", "en"); // de
+        var lang = "en"; // de
+        var flag = "gb"; // de
       } else {
-        var lang = localStorage.getItem('lang');
-        if (lang == 'de') {
-          var flag = 'de';
-        } else {
-          var flag = 'gb';
+        localStorage.setItem("lang", "en");
+        var lang = "en";
+        var flag = "gb";
+      }
+    } else {
+      var lang = localStorage.getItem("lang");
+      if (lang == "de") {
+        var flag = "de";
+      } else {
+        var flag = "gb";
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      document.getElementById("languageMenu").innerHTML =
+        '<span class="fi fi-' +
+        flag +
+        '"></span>' +
+        '<div class="menu">' +
+        '<a class="item" onclick="setLanguage(\'en\')"><span class="fi fi-gb"></span> English</a>' +
+        '<a class="item" onclick="setLanguage(\'de\')"><span class="fi fi-de"></span> Deutsch</a>' +
+        "</div>";
+
+      document.getElementById("languageMobileMenu").innerHTML =
+        '<a class="item" onclick="setLanguage(\'en\')"><span class="fi fi-gb"></span> English</a>' +
+        '<a class="item" onclick="setLanguage(\'de\')"><span class="fi fi-de"></span> Deutsch</a>';
+    });
+
+    function setLanguage(lang) {
+      localStorage.setItem("lang", lang);
+      location.reload();
+    }
+
+    const apiUrl = "https://api.yasarbonus.com";
+
+    // store the data in a global variable for later use
+    fetch(`${apiUrl}/api/website?locale=${lang}&populate=*`)
+      .then((response) => response.json())
+      .then((data) => {
+        window.websiteData = data.data.attributes;
+        document.getElementById("og-title").content = websiteData.Title;
+        document.getElementById("og-description").content = websiteData.Description;
+        document.getElementById("og-image").content = apiUrl + websiteData.Logo.data.attributes.url;
+        document.getElementById("og-url").content = window.location.href;
+        document.getElementById("website-title").innerText = websiteData.Title;
+        document.getElementById("website-description").content = websiteData.Description;
+        document.getElementById("website-keywords").content = websiteData.Keywords;
+        document.getElementById("website-favicon").href =
+          apiUrl + websiteData.Favicon.data.attributes.url;
+        document.getElementById("website-logo").src = apiUrl + websiteData.Logo.data.attributes.url;
+        document.getElementById("website-name").innerText = websiteData.Name;
+        document.getElementById("website-mobile-name").innerText = websiteData.Name;
+        document.getElementById("website-mobile-logo").src =
+          apiUrl + websiteData.Logo.data.attributes.url;
+        // load custom CSS
+        if (websiteData.CustomCSS) {
+          document.head.innerHTML += "<style>" + websiteData.CustomCSS + "</style>";
         }
-      }
 
-      document.addEventListener('DOMContentLoaded', function() {
+        for (let i = 0; i < websiteData.Menu.length; i++) {
+          document.getElementById("header-menu-links").innerHTML +=
+            '<a href="' +
+            websiteData.Menu[i].Target +
+            '" class="item">' +
+            websiteData.Menu[i].Name +
+            "</a>";
+        }
 
-        document.getElementById('languageMenu').innerHTML = '<span class="fi fi-' + flag + '"></span>' +
-          '<div class="menu">' +
-          '<a class="item" onclick="setLanguage(\'en\')"><span class="fi fi-gb"></span> English</a>' +
-          '<a class="item" onclick="setLanguage(\'de\')"><span class="fi fi-de"></span> Deutsch</a>' +
-          '</div>'
-          ;
+        for (let i = 0; i < websiteData.Menu.length; i++) {
+          // change the order of the menu items for the mobile menu
+          websiteData.Menu.reverse();
+          document.getElementById("header-menu-mobile-links").innerHTML =
+            '<a href="' +
+            websiteData.Menu[i].Target +
+            '" class="item">' +
+            websiteData.Menu[i].Name +
+            "</a>" +
+            document.getElementById("header-menu-mobile-links").innerHTML;
+        }
 
-          document.getElementById('languageMobileMenu').innerHTML = 
-          '<a class="item" onclick="setLanguage(\'en\')"><span class="fi fi-gb"></span> English</a>' +
-          '<a class="item" onclick="setLanguage(\'de\')"><span class="fi fi-de"></span> Deutsch</a>'
-          ;
+        for (let i = 0; i < websiteData.SocialLinks.length; i++) {
+          // add social links to the beginning of the social menu
+          document.getElementById("header-menu-right").innerHTML =
+            '<a href="' +
+            websiteData.SocialLinks[i].Target +
+            '" target="_blank" class="item"><i class="fa-brands fa-' +
+            websiteData.SocialLinks[i].FaBrandsIcon +
+            '"></i></a>' +
+            document.getElementById("header-menu-right").innerHTML;
+        }
+
+        for (let i = 0; i < websiteData.SocialLinks.length; i++) {
+          // add social links to the beginning of the social menu
+          document.getElementById("header-menu-mobile-right").innerHTML +=
+            '<a href="' +
+            websiteData.SocialLinks[i].Target +
+            '" target="_blank" class="item"><i class="fa-brands fa-' +
+            websiteData.SocialLinks[i].FaBrandsIcon +
+            '"></i> ' +
+            websiteData.SocialLinks[i].Name +
+            "</a>";
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching metadata:", error);
       });
+  </script>
 
-      function setLanguage(lang) {
-        localStorage.setItem('lang', lang);
-        location.reload();
-      }
-
-      const apiUrl = "https://api.yasarbonus.com";
-      
-      // store the data in a global variable for later use
-      fetch(`${apiUrl}/api/website?locale=${lang}&populate=*`)
-        .then(response => response.json())
-        .then(data => {
-          window.websiteData = data.data.attributes;
-          document.getElementById('og-title').content = websiteData.Title;
-          document.getElementById('og-description').content = websiteData.Description;
-          document.getElementById('og-image').content = apiUrl + websiteData.Logo.data.attributes.url;
-          document.getElementById('og-url').content = window.location.href;
-          document.getElementById('website-title').innerText = websiteData.Title;
-          document.getElementById('website-description').content = websiteData.Description;
-          document.getElementById('website-keywords').content = websiteData.Keywords;
-          document.getElementById('website-favicon').href = apiUrl + websiteData.Favicon.data.attributes.url;
-          document.getElementById('website-logo').src = apiUrl + websiteData.Logo.data.attributes.url;
-          document.getElementById('website-name').innerText = websiteData.Name;
-          document.getElementById('website-mobile-name').innerText = websiteData.Name;
-          document.getElementById('website-mobile-logo').src = apiUrl + websiteData.Logo.data.attributes.url;
-          // load custom CSS
-          if (websiteData.CustomCSS) {
-          document.head.innerHTML += '<style>' + websiteData.CustomCSS + '</style>';
-          }
-
-          for (let i = 0; i < websiteData.Menu.length; i++) {
-            document.getElementById('header-menu-links').innerHTML += '<a href="' + websiteData.Menu[i].Target + '" class="item">' + websiteData.Menu[i].Name + '</a>';
-          }
-
-          for (let i = 0; i < websiteData.Menu.length; i++) {
-            // change the order of the menu items for the mobile menu
-            websiteData.Menu.reverse();
-            document.getElementById('header-menu-mobile-links').innerHTML = '<a href="' + websiteData.Menu[i].Target + '" class="item">' + websiteData.Menu[i].Name + '</a>' + document.getElementById('header-menu-mobile-links').innerHTML;
-          }
-
-          for (let i = 0; i < websiteData.SocialLinks.length; i++) {
-            // add social links to the beginning of the social menu
-            document.getElementById('header-menu-right').innerHTML = '<a href="' + websiteData.SocialLinks[i].Target + '" target="_blank" class="item"><i class="fa-brands fa-' + websiteData.SocialLinks[i].FaBrandsIcon + '"></i></a>' + document.getElementById('header-menu-right').innerHTML;
-          }
-
-
-          for (let i = 0; i < websiteData.SocialLinks.length; i++) {
-            // add social links to the beginning of the social menu
-            document.getElementById('header-menu-mobile-right').innerHTML += '<a href="' + websiteData.SocialLinks[i].Target + '" target="_blank" class="item"><i class="fa-brands fa-' + websiteData.SocialLinks[i].FaBrandsIcon + '"></i> ' + websiteData.SocialLinks[i].Name + '</a>';
-          }
-
-
-        })
-        .catch(error => {
-          console.error('Error fetching metadata:', error);
-        });
-      
-    </script>
-  
   <!-- Matomo -->
   <script>
-    var _paq = window._paq = window._paq || [];
+    var _paq = (window._paq = window._paq || []);
     /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-    _paq.push(['trackPageView']);
-    _paq.push(['enableLinkTracking']);
-    (function() {
-      var u="//analytics.yasarbonus.com/";
-      _paq.push(['setTrackerUrl', u+'matomo.php']);
-      _paq.push(['setSiteId', '13']);
-      var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-      g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+    _paq.push(["trackPageView"]);
+    _paq.push(["enableLinkTracking"]);
+    (function () {
+      var u = "//analytics.yasarbonus.com/";
+      _paq.push(["setTrackerUrl", u + "matomo.php"]);
+      _paq.push(["setSiteId", "13"]);
+      var d = document,
+        g = d.createElement("script"),
+        s = d.getElementsByTagName("script")[0];
+      g.async = true;
+      g.src = u + "matomo.js";
+      s.parentNode.insertBefore(g, s);
     })();
   </script>
-  <noscript><p><img src="//analytics.yasarbonus.com/matomo.php?idsite=13&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+  <noscript
+    ><p>
+      <img
+        src="//analytics.yasarbonus.com/matomo.php?idsite=13&amp;rec=1"
+        style="border: 0"
+        alt="" /></p
+  ></noscript>
   <!-- End Matomo Code -->
-  
 </head>

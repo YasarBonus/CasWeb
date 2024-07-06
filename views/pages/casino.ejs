@@ -1,42 +1,43 @@
 <!DOCTYPE html>
 <html>
-  <%- include('../partials/head') %>
-  <%- include('../partials/header') %>
+  <%- include('../partials/head') %> <%- include('../partials/header') %>
 
-<body class="body">
-  <div class="ui container"style="margin-top: 100px !important; padding-bottom: 100px;">
-    <div class="ui segment" >
+  <body class="body">
+    <div class="ui container" style="margin-top: 100px !important; padding-bottom: 100px">
+      <div class="ui segment">
         <div id="casino-container"></div>
+      </div>
     </div>
-</div>
+  </body>
 
-
-</body>
-
-<script>
+  <script>
     // fetch the casino data from the API URL and populate it in the container div in a table format
     // after dom content is loaded
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener("DOMContentLoaded", function () {
       fetchCasino();
     });
     function fetchCasino() {
-    fetch(`${apiUrl}/api/casinos/<%= casino.id %>?locale=${lang}&populate[Boni][fields][0]=Percent&populate[Boni][fields][1]=upTo&populate[Boni][fields][2]=PromoCode&populate[Boni][fields][3]=PromoCodeDescription&populate[Boni][fields][4]=Freespins&populate[payment_methods][fields][0]=Name&populate[payment_methods][fields][1]=SortOrder&populate[payment_methods][populate][Logo][fields][0]=url&populate[features][fields][0]=Name&populate[features][populate][icon][fields][0]=Alt&populate[features][populate][icon][populate][Image][fields][0]=url&populate[features][populate][Label][fields][0]=Label&populate[features][populate][Label][fields][1]=Description&populate[features][populate][Label][populate][color][fields][0]=Hex&populate[features][populate][Label][populate][fontColor][fields][0]=Hex&populate[features][populate][Label][populate][icon][fields][0]=Alt&populate[features][populate][Label][populate][icon][populate][Image][fields][0]=url&populate[providers][fields][0]=Name&populate[providers][fields][1]=SortOrder&populate[providers][populate][Logo][fields][0]=url&populate[company][fields][0]=Name&populate[license][fields][0]=Name&populate[license][populate][Logo][fields][0]=url&populate[EgonsReview][fields][0]=Title&populate[EgonsReview][fields][1]=Description&populate[category][fields][0]=Name&populate[category][populate][LabelColor][fields][0]=Hex&populate[Logo][fields][0]=url&fields[0]=Name&fields[1]=MaxBet&fields[2]=Wager&fields[3]=WagerType&fields[4]=Label&fields[5]=Slug&fields[6]=MaxCashout&fields[7]=SortOrder&populate[Media][fields][0]=*&locale=en-EN`)
-      .then(response => response.json())
-      .then(data => {
-        casino = data.data
-        console.log('Casino data:', data);
-        // set the casino data in the container div
-        document.getElementById('casino-container').innerHTML = `
-        ${casino.attributes.Label
-                ? '<div class="ui teal large ribbon label">' + casino.attributes.Label + '</div>'
-                : ""}
+      fetch(
+        `${apiUrl}/api/casinos/<%= casino.id %>?locale=${lang}&populate[Boni][fields][0]=Percent&populate[Boni][fields][1]=upTo&populate[Boni][fields][2]=PromoCode&populate[Boni][fields][3]=PromoCodeDescription&populate[Boni][fields][4]=Freespins&populate[payment_methods][fields][0]=Name&populate[payment_methods][fields][1]=SortOrder&populate[payment_methods][populate][Logo][fields][0]=url&populate[features][fields][0]=Name&populate[features][populate][icon][fields][0]=Alt&populate[features][populate][icon][populate][Image][fields][0]=url&populate[features][populate][Label][fields][0]=Label&populate[features][populate][Label][fields][1]=Description&populate[features][populate][Label][populate][color][fields][0]=Hex&populate[features][populate][Label][populate][fontColor][fields][0]=Hex&populate[features][populate][Label][populate][icon][fields][0]=Alt&populate[features][populate][Label][populate][icon][populate][Image][fields][0]=url&populate[providers][fields][0]=Name&populate[providers][fields][1]=SortOrder&populate[providers][populate][Logo][fields][0]=url&populate[company][fields][0]=Name&populate[license][fields][0]=Name&populate[license][populate][Logo][fields][0]=url&populate[EgonsReview][fields][0]=Title&populate[EgonsReview][fields][1]=Description&populate[category][fields][0]=Name&populate[category][populate][LabelColor][fields][0]=Hex&populate[Logo][fields][0]=url&fields[0]=Name&fields[1]=MaxBet&fields[2]=Wager&fields[3]=WagerType&fields[4]=Label&fields[5]=Slug&fields[6]=MaxCashout&fields[7]=SortOrder&populate[Media][fields][0]=*&locale=en-EN`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          casino = data.data;
+          console.log("Casino data:", data);
+          // set the casino data in the container div
+          document.getElementById("casino-container").innerHTML =
+            `
+        ${
+          casino.attributes.Label
+            ? '<div class="ui teal large ribbon label">' + casino.attributes.Label + "</div>"
+            : ""
+        }
           <div class="ui two column centered grid">
             <div class="row">
               <div class="sixteen wide tablet eight wide computer middle aligned column">
-                <h1 class="ui header">${casino.attributes.Name} Casino Review</h1>`+ 
-                (casino.attributes.EgonsReview !== null
-              ? 
-                `<div class="ui basic left aligned segment">
+                <h1 class="ui header">${casino.attributes.Name} Casino Review</h1>` +
+            (casino.attributes.EgonsReview !== null
+              ? `<div class="ui basic left aligned segment">
                   <div class="ui comments">
   <div class="comment">
     <a class="avatar">
@@ -52,22 +53,37 @@
   </div>
 </div>
                 `
-              : '') + `</div>
+              : "") +
+            `</div>
               <div class="sixteen wide tablet six wide computer middle aligned column"><img src="${apiUrl}${casino.attributes.Logo.data.attributes.url}"></div>
             </div>
             <div class="center aligned row">
               <div class="ui basic segment">` +
-                // for each entry in casino.attributes.features.data that has attributes.Label not null, create a label
-                casino.attributes.features.data
-                  .filter((feature) => feature.attributes.Label)
-                  .map(
-                    // if else here
-                    (feature) =>
-                      `<a ${feature.attributes.Label.Description ? 'data-tooltip="' + feature.attributes.Label.Description + '"' : ''} + class="ui small circular label" style="${feature.attributes.Label.fontColor ? 'color:' + feature.attributes.Label.fontColor.data.attributes.Hex + ';' : ''}${feature.attributes.Label.color.data.attributes.Hex ? 'background:' + feature.attributes.Label.color.data.attributes.Hex + ';' : ''}">${feature.attributes.Label.Label}</a>`
-                  )
-                  .join("") +
-              `
-              <a class="ui right floated small circular label" style="background:${casino.attributes.category.data.attributes.LabelColor.data.attributes.Hex}; color: white;">${casino.attributes.category.data.attributes.Name}</a>
+            // for each entry in casino.attributes.features.data that has attributes.Label not null, create a label
+            casino.attributes.features.data
+              .filter((feature) => feature.attributes.Label)
+              .map(
+                // if else here
+                (feature) =>
+                  `<a ${
+                    feature.attributes.Label.Description
+                      ? 'data-tooltip="' + feature.attributes.Label.Description + '"'
+                      : ""
+                  } + class="ui small circular label" style="${
+                    feature.attributes.Label.fontColor
+                      ? "color:" + feature.attributes.Label.fontColor.data.attributes.Hex + ";"
+                      : ""
+                  }${
+                    feature.attributes.Label.color.data.attributes.Hex
+                      ? "background:" + feature.attributes.Label.color.data.attributes.Hex + ";"
+                      : ""
+                  }">${feature.attributes.Label.Label}</a>`
+              )
+              .join("") +
+            `
+              <a class="ui right floated small circular label" style="background:${
+                casino.attributes.category.data.attributes.LabelColor.data.attributes.Hex
+              }; color: white;">${casino.attributes.category.data.attributes.Name}</a>
               </div>
             </div>
             <div class="center aligned row">
@@ -108,7 +124,9 @@
               </div>
                           <div class="center aligned row">
               <div class="ui basic segment">
-                <a href="/go/${casino.attributes.Slug}" target="_blank" class="ui massive green button">PLAY NOW</a>
+                <a href="/go/${
+                  casino.attributes.Slug
+                }" target="_blank" class="ui massive green button">PLAY NOW</a>
               </div>
             </div>
                           <div class="row">
@@ -117,9 +135,15 @@
                 <div class="ui basic left aligned segment">
                   <h2 class="ui header">Casino Bonus</h2>
                 <div class="ui relaxed devided list">` +
-                casino.attributes.Boni.map(
-            (bonus) => `<div class="item"><i class="middle aligned large fa-solid fa-arrow-right icon"></i><div class="content"><div class="header">${bonus.Percent}% up to ${bonus.upTo} €</div><div class="description">${bonus.Freespins ? ` <i>+ ${bonus.Freespins} Freespins` : ''} ${bonus.PromoCode ? ` Code: ${bonus.PromoCode}` : ''}</i></div></div></div>`
-          ).join('') + `
+            casino.attributes.Boni.map(
+              (bonus) =>
+                `<div class="item"><i class="middle aligned large fa-solid fa-arrow-right icon"></i><div class="content"><div class="header">${
+                  bonus.Percent
+                }% up to ${bonus.upTo} €</div><div class="description">${
+                  bonus.Freespins ? ` <i>+ ${bonus.Freespins} Freespins` : ""
+                } ${bonus.PromoCode ? ` Code: ${bonus.PromoCode}` : ""}</i></div></div></div>`
+            ).join("") +
+            `
                 </div>
                 </div>
               </div>
@@ -130,9 +154,13 @@
                 <div class="ui relaxed devided list">
                   <div class="item"><i class="large building icon"></i><div class="content"><div class="header">${casino.attributes.company.data.attributes.Name}</div></div></div>
                 ` +
-                casino.attributes.features.data.map(
-            (feature) => `<div class="item"><img class="ui avatar image" src="${apiUrl}${feature.attributes.icon.data.attributes.Image.data.attributes.url}"><div class="content"><div class="header">${feature.attributes.Name}</div></div></div>`
-          ).join('')  + `
+            casino.attributes.features.data
+              .map(
+                (feature) =>
+                  `<div class="item"><img class="ui avatar image" src="${apiUrl}${feature.attributes.icon.data.attributes.Image.data.attributes.url}"><div class="content"><div class="header">${feature.attributes.Name}</div></div></div>`
+              )
+              .join("") +
+            `
                 </div>
               </div>
               </div>
@@ -144,13 +172,14 @@
                 <h2 class="ui header">Provider</h2>
                 <div class="ui tiny images">
                 ` +
-                casino.attributes.providers.data
-            .sort((a, b) => a.attributes.SortOrder - b.attributes.SortOrder)
-            .map(
-              (provider) =>
-              `<img class="ui image" src="${apiUrl}${provider.attributes.Logo.data.attributes.url}" alt="${provider.attributes.Name}" />`
-            )
-            .join('')  + `
+            casino.attributes.providers.data
+              .sort((a, b) => a.attributes.SortOrder - b.attributes.SortOrder)
+              .map(
+                (provider) =>
+                  `<img class="ui image" src="${apiUrl}${provider.attributes.Logo.data.attributes.url}" alt="${provider.attributes.Name}" />`
+              )
+              .join("") +
+            `
             </div>
             </div>
               </div>
@@ -159,12 +188,14 @@
                   <h2 class="ui header">Payment Methods</h2>
                 <div class="ui tiny images">
                 ` +
-                casino.attributes.payment_methods.data
-          .sort((a, b) => a.attributes.SortOrder - b.attributes.SortOrder)
-          .map(
-            (payment_method) =>
-              `<img class="ui image" src="${apiUrl}${payment_method.attributes.Logo.data.attributes.url}" alt="${payment_method.attributes.Name}" />`
-          ).join('')  + `
+            casino.attributes.payment_methods.data
+              .sort((a, b) => a.attributes.SortOrder - b.attributes.SortOrder)
+              .map(
+                (payment_method) =>
+                  `<img class="ui image" src="${apiUrl}${payment_method.attributes.Logo.data.attributes.url}" alt="${payment_method.attributes.Name}" />`
+              )
+              .join("") +
+            `
           </div>
           </div>
           </div>
@@ -199,36 +230,43 @@
                 Wager (${casino.attributes.WagerType})
               </div>
             </div>
-                          <p id="calculated-requirements-text">You need to deposit at least ${casino.attributes.Boni[0].upTo / (casino.attributes.Boni[0].Percent / 100)}€ to get the maximum bonus of ${casino.attributes.Boni[0].upTo}€.</p>
+                          <p id="calculated-requirements-text">You need to deposit at least ${
+                            casino.attributes.Boni[0].upTo /
+                            (casino.attributes.Boni[0].Percent / 100)
+                          }€ to get the maximum bonus of ${casino.attributes.Boni[0].upTo}€.</p>
 
               </div>
 
               </div>
               
                 ` +
-                (casino.attributes.Media && casino.attributes.Media.data
-                  ? 
-                  `
+            (casino.attributes.Media && casino.attributes.Media.data
+              ? `
                   <div class="row">
                 <div class="sixteen wide tablet eight wide computer column">
                 <div class="ui basic segment">
                 <div class="ui divider"></div>
                 <div class="ui tiny images">
-                  ` 
-                  + casino.attributes.Media.data
-                    .map(
+                  ` +
+                casino.attributes.Media.data
+                  .map(
                     (media) =>
-                      `<img class="ui image" onclick="enlargeMedia('${apiUrl}${media.attributes.url}')" src="${apiUrl}${media.attributes.formats ? media.attributes.formats.thumbnail.url : media.attributes.url}" />`
-                    )
-                    .join('')
-
-                    + `</div>
+                      `<img class="ui image" onclick="enlargeMedia('${apiUrl}${
+                        media.attributes.url
+                      }')" src="${apiUrl}${
+                        media.attributes.formats
+                          ? media.attributes.formats.thumbnail.url
+                          : media.attributes.url
+                      }" />`
+                  )
+                  .join("") +
+                `</div>
                 </div>
               </div>
             
-            </div>` 
-                  : '') +
-                  `                
+            </div>`
+              : "") +
+            `                
             
                 
             </div>
@@ -237,7 +275,7 @@
               </div>
               <div class="row">
               <div class="six wide column">` +
-          (casino.attributes.license.data
+            (casino.attributes.license.data
               ? '<div class="eight wide column" style="padding-top:30px">' +
                 "<h2 class='ui header'>License</h2>" +
                 '<div class="ui column grid container">' +
@@ -245,22 +283,23 @@
                 apiUrl +
                 casino.attributes.license.data.attributes.Logo.data.attributes.url +
                 '" alt="" /></div>' +
-                '</div>' +
-                '</div>'
-              : '') + `</div>
+                "</div>" +
+                "</div>"
+              : "") +
+            `</div>
             </div>
         `;
-      })
-      .catch(error => {
-        console.error('Error fetching casino:', error);
-      });
+        })
+        .catch((error) => {
+          console.error("Error fetching casino:", error);
+        });
       calculateBonus();
     }
-    
+
     // function that will enlarge the media when clicked
     function enlargeMedia(url) {
-      const modal = document.createElement('div');
-      modal.classList.add('ui', 'basic', 'modal');
+      const modal = document.createElement("div");
+      modal.classList.add("ui", "basic", "modal");
       modal.innerHTML = `
         <div class="content">
           <div class="image content">
@@ -268,104 +307,98 @@
         </div>
       `;
       document.body.appendChild(modal);
-      $('.ui.modal')
-  .modal({
-    inverted: true
-  })
-  .modal('show')
-;
-;
-      modal.addEventListener('click', () => {
-        $('.ui.modal')
-  .modal('hide')
-  modal.remove();
-;
+      $(".ui.modal")
+        .modal({
+          inverted: true,
+        })
+        .modal("show");
+      modal.addEventListener("click", () => {
+        $(".ui.modal").modal("hide");
+        modal.remove();
       });
     }
 
     // function to calculate the bonus amount, deposit amount and wager amount
 
     function calculateBonus(deposit, bonusPercentage, maxBonus, wagerMultiplier, wagerType) {
-    // Get input values
-    deposit = parseFloat(document.getElementById("depositInput").value);
-    // set default values from casino data
-    bonusPercentage = casino.attributes.Boni[0].Percent;
-    console.log("bonusPercentage", bonusPercentage);
-    maxBonus = casino.attributes.Boni[0].upTo;
-    wagerMultiplier = casino.attributes.Wager;
-    wagerType = casino.attributes.WagerType;
+      // Get input values
+      deposit = parseFloat(document.getElementById("depositInput").value);
+      // set default values from casino data
+      bonusPercentage = casino.attributes.Boni[0].Percent;
+      console.log("bonusPercentage", bonusPercentage);
+      maxBonus = casino.attributes.Boni[0].upTo;
+      wagerMultiplier = casino.attributes.Wager;
+      wagerType = casino.attributes.WagerType;
 
+      // Calculate bonus amount
+      console.log("deposit", deposit);
+      let bonusAmount = Math.min(deposit * (bonusPercentage / 100), maxBonus);
 
-    // Calculate bonus amount
-    console.log("deposit", deposit);
-    let bonusAmount = Math.min(deposit * (bonusPercentage / 100), maxBonus);
+      // Calculate total deposit amount
+      let totalDepositAmount = deposit + bonusAmount;
+      // if (wagerType === "sticky") {
+      //     totalDepositAmount = deposit + bonusAmount;
+      // } else {
+      //     totalDepositAmount = deposit;
+      // }
 
-    // Calculate total deposit amount
-    let totalDepositAmount = deposit + bonusAmount;
-    // if (wagerType === "sticky") {
-    //     totalDepositAmount = deposit + bonusAmount;
-    // } else {
-    //     totalDepositAmount = deposit;
-    // }
-
-    // Calculate wagering requirement
-    let wagerAmount;
-    if (wagerType === "B") {
+      // Calculate wagering requirement
+      let wagerAmount;
+      if (wagerType === "B") {
         wagerAmount = wagerMultiplier * bonusAmount;
-    } else if (wagerType === "D+B") {
+      } else if (wagerType === "D+B") {
         wagerAmount = wagerMultiplier * (deposit + bonusAmount);
-    }
-    console.log("bonusAmount", bonusAmount);
-    console.log("totalDepositAmount", totalDepositAmount);
-    console.log("wagerAmount", wagerAmount);
+      }
+      console.log("bonusAmount", bonusAmount);
+      console.log("totalDepositAmount", totalDepositAmount);
+      console.log("wagerAmount", wagerAmount);
 
-    // round the values up to the next integer
-    totalDepositAmount = Math.ceil(totalDepositAmount);
-    bonusAmount = Math.ceil(bonusAmount);
-    wagerAmount = Math.ceil(wagerAmount);
+      // round the values up to the next integer
+      totalDepositAmount = Math.ceil(totalDepositAmount);
+      bonusAmount = Math.ceil(bonusAmount);
+      wagerAmount = Math.ceil(wagerAmount);
 
-
-    // if the values are not numbers, set them to -
-    if (isNaN(totalDepositAmount)) {
+      // if the values are not numbers, set them to -
+      if (isNaN(totalDepositAmount)) {
         totalDepositAmount = "-";
-    } else {
+      } else {
         totalDepositAmount = totalDepositAmount + "€";
-    }
-    if (isNaN(bonusAmount)) {
+      }
+      if (isNaN(bonusAmount)) {
         bonusAmount = "-";
-    } else {
+      } else {
         bonusAmount = bonusAmount + "€";
-    }
-    if (isNaN(wagerAmount)) {
+      }
+      if (isNaN(wagerAmount)) {
         wagerAmount = "-";
-    } else {
+      } else {
         wagerAmount = wagerAmount + "€";
-    }
+      }
 
-    // calculate the deposit needed to reach the maximum bonus
-    let maxBonusDeposit = maxBonus / (bonusPercentage / 100);
-    
-    // Set the calculated values in the DOM elements with the respective IDs
-        document.getElementById("calculated-deposit-amount").innerText = totalDepositAmount;
-        document.getElementById("calculated-bonus-amount").innerText = bonusAmount;
-        document.getElementById("calculated-wager-amount").innerText = wagerAmount;
-        if (wagerRequirement === "-") {
-            document.getElementById("calculated-requirements-text").innerHTML = `You need to deposit at least ${maxBonusDeposit}€ to get the maximum bonus of ${maxBonus}€.`;
-        } else {
-            document.getElementById("calculated-requirements-text").innerHTML = `You need to deposit at least ${maxBonusDeposit}€ to get the maximum bonus of ${maxBonus}€.`;
+      // calculate the deposit needed to reach the maximum bonus
+      let maxBonusDeposit = maxBonus / (bonusPercentage / 100);
 
-        }
+      // Set the calculated values in the DOM elements with the respective IDs
+      document.getElementById("calculated-deposit-amount").innerText = totalDepositAmount;
+      document.getElementById("calculated-bonus-amount").innerText = bonusAmount;
+      document.getElementById("calculated-wager-amount").innerText = wagerAmount;
+      if (wagerRequirement === "-") {
+        document.getElementById(
+          "calculated-requirements-text"
+        ).innerHTML = `You need to deposit at least ${maxBonusDeposit}€ to get the maximum bonus of ${maxBonus}€.`;
+      } else {
+        document.getElementById(
+          "calculated-requirements-text"
+        ).innerHTML = `You need to deposit at least ${maxBonusDeposit}€ to get the maximum bonus of ${maxBonus}€.`;
+      }
 
-    return {
+      return {
         depositAmount: totalDepositAmount,
         bonusAmount: bonusAmount,
-        wagerAmount: wagerAmount
-    };
+        wagerAmount: wagerAmount,
+      };
+    }
+  </script>
 
-
-}
-</script>
-
-<%- include('../partials/footer') %>
-
+  <%- include('../partials/footer') %>
 </html>
