@@ -152,7 +152,7 @@
                 <div class="ui basic left aligned segment">
                 <h2 class="ui header">Casino Features</h2>
                 <div class="ui relaxed devided list">
-                  <div class="item"><i class="large building icon"></i><div class="content"><div class="header">${casino.attributes.company.data.attributes.Name}</div></div></div>
+                  ${casino.attributes.company.data ? `<div class="item"><i class="large building icon"></i><div class="content"><div class="header">${casino.attributes.company.data.attributes.Name}</div></div></div>` : ''}
                 ` +
             casino.attributes.features.data
               .map(
