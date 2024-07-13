@@ -429,8 +429,8 @@
               `<div class="item"><i class="middle aligned large fa-solid fa-arrow-right icon"></i><div class="content"><div class="header">${
               bonus.Percent
               }% up to ${bonus.upTo} €</div><div class="description">${
-              bonus.BonusDescription ? `${bonus.BonusDescription}` : ""
-              }${bonus.Freespins ? `<br><i>+ ${bonus.Freespins} Freespins` : ""} ${bonus.PromoCode ? ` Code: ${bonus.PromoCode}` : ""}</i></div></div></div>`
+              bonus.BonusDescription ? `${bonus.BonusDescription}<br>` : ""
+              }${bonus.Freespins ? `<i>+ ${bonus.Freespins} Freespins` : ""} ${bonus.PromoCode ? ` Code: ${bonus.PromoCode}` : ""}</i></div></div></div>`
             ).join("") +
           "</ul>" +
           (casino.attributes.EgonsReview !== null
