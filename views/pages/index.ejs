@@ -456,7 +456,7 @@
           "<h3>Casino Features</h3>" +
           '<ul class="ui list">' +
           `${
-            casino.attributes.company.data.attributes.Name
+            casino.attributes.company.data !== null
               ? '<div class="item"><i class="building icon"></i>' +
                 casino.attributes.company.data.attributes.Name +
                 "</div>"
