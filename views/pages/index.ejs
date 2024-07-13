@@ -125,10 +125,6 @@
       data.sort((a, b) => a.attributes.SortOrder - b.attributes.SortOrder);
 
       data.forEach(function (casino) {
-        console.log(
-          "casino features:",
-          casino.attributes.features.data[0].attributes.Label.icon.data
-        );
         $("#casinoListContainer").append(
           `<div class="top attached ui segment" id="casino${casino.id}" style="border:0px">
             <div class="ui styled two column grid" style="">
