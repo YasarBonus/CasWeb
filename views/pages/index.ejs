@@ -52,7 +52,7 @@
 
       filters.features.data.forEach(function (feature) {
         $("#featuresFilter").append(
-          `<div class="ui checkbox"><input id="feature${feature.id}" type="checkbox" onchange="useFilters();"><label for="${feature.id}">${feature.attributes.Name}</label></div>`
+          `<div class="ui checkbox"><input id="feature${feature.id}" type="checkbox" onchange="useFilters();"><label for="${feature.id}">${feature.attributes.Name}</label></div><br>`
         );
       });
 
