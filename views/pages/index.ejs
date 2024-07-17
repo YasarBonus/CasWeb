@@ -222,7 +222,7 @@
                     </div>
                     <div class="column">
                     <div class="bonustext">
-                    ${casino.attributes.MaxCashout ? casino.attributes.MaxCashout + " €" : "No"}
+                    ${casino.attributes.MaxCashout ? (isNaN(casino.attributes.MaxCashout) ? casino.attributes.MaxCashout : casino.attributes.MaxCashout + " €") : "No"}
                     </div>
                     <div class="bonushead">Max Cashout</div>
                     </div>
