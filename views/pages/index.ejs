@@ -76,7 +76,13 @@
         min: 0,
         max: 300,
         step: 50,
+        labelDistance: 50,
         range: true,
+        showThumbTooltip: true,
+        tooltipConfig: {
+          position: 'bottom center',
+          variation: 'small visible green'
+        },
         slide: function (event, ui) {
           $("#bonusFilter").siblings(".labeled");
         },
@@ -666,9 +672,9 @@
                   <div class="filterhead"><i class="star icon"></i> Specials</div>
                 </div>
                 <div class="filteritem">
-                  <div class="filterhead"><i class="hand holding usd icon"></i> Minimum Bonus</div>
+                  <div class="filterhead"><i class="hand holding usd icon"></i> Minimum Bonus (%)</div>
                   <div id="">
-                    <div class="ui labeled bonus slider" id="bonusFilter"></div>
+                    <div class="ui labeled ticked bonus slider" id="bonusFilter"></div>
                   </div>
                 </div>
                 <script></script>
