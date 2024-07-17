@@ -18,7 +18,7 @@
     });
     function fetchCasino() {
       fetch(
-        `${apiUrl}/api/casinos/<%= casino.id %>?locale=${lang}&populate[Boni][fields][0]=Percent&populate[Boni][fields][1]=upTo&populate[Boni][fields][2]=PromoCode&populate[Boni][fields][3]=PromoCodeDescription&populate[Boni][fields][4]=Freespins&populate[Boni][fields][5]=BonusDescription&populate[payment_methods][fields][0]=Name&populate[payment_methods][fields][1]=SortOrder&populate[payment_methods][populate][Logo][fields][0]=url&populate[features][fields][0]=Name&populate[features][populate][icon][fields][0]=Alt&populate[features][populate][icon][populate][Image][fields][0]=url&populate[features][populate][Label][fields][0]=Label&populate[features][populate][Label][fields][1]=Description&populate[features][populate][Label][populate][color][fields][0]=Hex&populate[features][populate][Label][populate][fontColor][fields][0]=Hex&populate[features][populate][Label][populate][icon][fields][0]=Alt&populate[features][populate][Label][populate][icon][populate][Image][fields][0]=url&populate[providers][fields][0]=Name&populate[providers][fields][1]=SortOrder&populate[providers][populate][Logo][fields][0]=url&populate[company][fields][0]=Name&populate[license][fields][0]=Name&populate[license][populate][Logo][fields][0]=url&populate[EgonsReview][fields][0]=Title&populate[EgonsReview][fields][1]=Description&populate[category][fields][0]=Name&populate[category][populate][LabelColor][fields][0]=Hex&populate[Logo][fields][0]=url&fields[0]=Name&fields[1]=MaxBet&fields[2]=Wager&fields[3]=WagerType&fields[4]=Label&fields[5]=Slug&fields[6]=MaxCashout&fields[7]=SortOrder&populate[Media][fields][0]=*&locale=en-EN`
+        `${apiUrl}/api/casinos/<%= casino.id %>?locale=${lang}&populate[Boni][fields][0]=Percent&populate[Boni][fields][1]=upTo&populate[Boni][fields][2]=PromoCode&populate[Boni][fields][3]=PromoCodeDescription&populate[Boni][fields][4]=Freespins&populate[Boni][fields][5]=BonusDescription&populate[payment_methods][fields][0]=Name&populate[payment_methods][fields][1]=SortOrder&populate[payment_methods][populate][Logo][fields][0]=url&populate[features][fields][0]=Name&populate[features][populate][icon][fields][0]=Alt&populate[features][populate][icon][populate][Image][fields][0]=url&populate[features][populate][Label][fields][0]=Label&populate[features][populate][Label][fields][1]=Description&populate[features][populate][Label][populate][color][fields][0]=Hex&populate[features][populate][Label][populate][fontColor][fields][0]=Hex&populate[features][populate][Label][populate][icon][fields][0]=Alt&populate[features][populate][Label][populate][icon][populate][Image][fields][0]=url&populate[providers][fields][0]=Name&populate[providers][fields][1]=SortOrder&populate[providers][populate][Logo][fields][0]=url&populate[company][fields][0]=Name&populate[license][fields][0]=Name&populate[license][populate][Logo][fields][0]=url&populate[Review][fields][0]=Title&populate[Review][fields][1]=Description&populate[Review][fields][2]=Type&populate[category][fields][0]=Name&populate[category][populate][LabelColor][fields][0]=Hex&populate[Logo][fields][0]=url&fields[0]=Name&fields[1]=MaxBet&fields[2]=Wager&fields[3]=WagerType&fields[4]=Label&fields[5]=Slug&fields[6]=MaxCashout&fields[7]=SortOrder&populate[Media][fields][0]=*&locale=en-EN`
       )
         .then((response) => response.json())
         .then((data) => {
@@ -36,17 +36,15 @@
             <div class="row">
               <div class="sixteen wide tablet eight wide computer middle aligned column">
                 <h1 class="ui header">${casino.attributes.Name} Casino Review</h1>` +
-            (casino.attributes.EgonsReview !== null
+            (casino.attributes.Review !== null
               ? `<div class="ui basic left aligned segment">
                   <div class="ui comments">
   <div class="comment">
-    <a class="avatar">
-      <img src="/images/Egon.png" />
-    </a>
+    ${casino.attributes.Review.Type === "Default" ? '<a class="avatar"><img src="/images/Egon.png" /></a>' : ""}
     <div class="content">
-      <a class="author">${casino.attributes.EgonsReview.Title}</a>
+      <a class="author">${casino.attributes.Review.Title}</a>
       <div class="text">
-        ${casino.attributes.EgonsReview.Description[0].children[0].text}
+        ${casino.attributes.Review.Description[0].children[0].text}
       </div>
     </div>
   </div>
