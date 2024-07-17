@@ -78,11 +78,6 @@
         step: 50,
         labelDistance: 50,
         range: true,
-        showThumbTooltip: true,
-        tooltipConfig: {
-          position: 'bottom center',
-          variation: 'small visible green'
-        },
         slide: function (event, ui) {
           $("#bonusFilter").siblings(".labeled");
         },
@@ -462,7 +457,7 @@
             ).join("") +
           "</ul>" +
           (casino.attributes.Review !== null
-            ? `<h3>Egon's Review</h3>` +
+            ? `<h3>Review</h3>` +
               `
                   <div class="ui comments">
   <div class="comment">
