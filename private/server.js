@@ -5,8 +5,72 @@ const port = 3000;
 // require dotenv
 require("dotenv").config();
 
-const apiUrl =
-  process.env.NODE_ENV === "production" ? process.env.API_URL_PROD : process.env.API_URL_DEV;
+const apiUrl = process.env.NODE_ENV === "production" ? process.env.API_URL_PROD : process.env.API_URL_DEV;
+
+// EMAILS
+
+const nodemailer = require('nodemailer');
+
+// SMTP
+
+const SMTP_HOST = process.env.SMTP_HOST;
+const SMTP_PORT = process.env.SMTP_PORT;
+const SMTP_USER = process.env.SMTP_USER;
+const SMTP_PASS = process.env.SMTP_PASS;
+const SMTP_FROM = process.env.SMTP_FROM;
+
+// create transporter
+const transporter = nodemailer.createTransport({
+  host: SMTP_HOST,
+  port: SMTP_PORT,
+  auth: {
+    user: SMTP_USER,
+    pass: SMTP_PASS,
+  },
+});
+
+// function to send email to user
+// "to" is the user id, "subject" is the subject, "text" is the text version, "html" is the html version
+
+function sendEmail(to, subject, text, html) {
+  if (typeof to === 'number') {
+    db.query('SELECT email FROM users WHERE id = ?', [to], (err, result) => {
+      if (err) {
+        logger.error('Error querying database: ' + err);
+        return;
+      }
+      const mailOptions = {
+        from: SMTP_FROM,
+        to: result[0].email,
+        subject: subject,
+        text: text,
+        html: html,
+      };
+      transporter.sendMail(mailOptions, (err, info) => {
+        if (err) {
+          logger.error('Error sending email: ' + err);
+          return;
+        }
+        logger.info('Email sent: ' + info.response);
+      });
+    });
+  } else {
+    const mailOptions = {
+      from: SMTP_FROM,
+      to: to,
+      subject: subject,
+      text: text,
+      html: html,
+    };
+    transporter.sendMail(mailOptions, (err, info) => {
+      if (err) {
+        logger.error('Error sending email: ' + err);
+        return;
+      }
+      logger.info('Email sent: ' + info.response);
+    });
+  }
+};
 
 // Statische Dateien aus dem "public"-Ordner bereitstellen
 app.use(express.static("public"));
