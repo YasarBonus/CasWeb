@@ -4,19 +4,19 @@
   <url>
     <loc><%= domain %><%= page.Slug %></loc>
     <priority>1.0</priority>
-    <changeFreq>daily</changeFreq>
+    <changefreq>daily</changefreq>
   </url>
   <% }); %> <% customPages.forEach(function(page) { %>
   <url>
     <loc><%= domain %>/<%= page.attributes.Slug %></loc>
     <priority>1.0</priority>
-    <changeFreq>daily</changeFreq>
+    <changefreq>daily</changefreq>
   </url>
   <% }); %> <% casinos.forEach(function(casino) { %>
   <url>
     <loc><%= domain %>/casino/<%= casino.attributes.Slug %></loc>
     <priority>0.8</priority>
-    <changeFreq>daily</changeFreq>
+    <changefreq>daily</changefreq>
   </url>
   <% }); %>
 </urlset>
