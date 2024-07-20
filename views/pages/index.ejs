@@ -92,10 +92,13 @@
       });
 
       $("#bonusFilter").slider({
-        min: 0,
+        // min: filters.minimumBonusMin,
+        // max: filters.minimumBonusMax,
+        // step: filters.minimumBonusStep,
+        min: 100,
         max: 300,
         step: 50,
-        labelDistance: 50,
+        //labelDistance: 50,
         range: true,
         slide: function (event, ui) {
           $("#bonusFilter").siblings(".labeled");
