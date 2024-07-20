@@ -1,2 +1,15 @@
+<!-- Hitting F will show a name search bar -->
+
+<script>
+    // hit F to show the search bar
+    document.addEventListener("keydown", function (e) {
+        if (e.key === "F") {
+            console.log("f was pressed");
+            document.getElementById("name-filter").style.display = "block";
+            // document.getElementById("nameFilter").focus();
+        }
+    });
+</script>
+
 <script src="/js/ageCheck.js"></script>
 <script src="/js/backToTop.js"></script>

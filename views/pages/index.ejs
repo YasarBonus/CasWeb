@@ -6,6 +6,10 @@
       $(".ui.filter.dropdown").on("change", function () {
         useFilters();
       });
+      // listen to changes in the name filter
+      $("#nameFilter").on("input", function () {
+        useFilters();
+      });
       fetchFiltersData();
       populateHeader();
     });
@@ -312,6 +316,7 @@
         payment_methods: $("#paymentmethodsFilter").val(),
         providers: $("#providerFilter").val(),
         company: $("#companyFilter").val(),
+        Name: $("#nameFilter").val(),
       };
 
       // company and category are a single select dropdown, so we need to convert it to an array
@@ -374,7 +379,11 @@
                 filterString += `&filters[$and][0][${key}][$in][${index}]=${value}`;
               }
             });
-          } else {
+          // handle name filter
+          } else if (key === "Name") {
+            filterString += `&filters[${key}][$containsi]=${filters[key]}`;
+          }
+          else {
             filters[key].forEach((value, index) => {
               filterString += `&filters[${key}][$eq][${index}]=${value}`;
             });
@@ -651,6 +660,12 @@
               <div
                 class="sixteen wide mobile eight wide tablet sixteen wide computer column"
                 style="padding: none">
+                <div class="filteritem" id="name-filter" style="display:none">
+                  <div class="filterhead">Name</div>
+                  <div class="ui fluid filter input">
+                    <input type="text" placeholder="Search..." id="nameFilter">
+                  </div>
+                </div>
                 <div class="filteritem">
                   <div class="filterhead"><i class="compass icon"></i> Bonus Type</div>
                   <select class="ui fluid search filter dropdown" id="categoryFilter">
