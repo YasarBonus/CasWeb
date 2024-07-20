@@ -71,6 +71,21 @@
         );
       });
 
+      // if filters.nameFilter is true, show the name filter
+      if (filters.nameFilter == true) {
+        document.getElementById("name-filter").style.display = "block";
+      }
+
+          // hit F to show the search bar
+    document.addEventListener("keydown", function (e) {
+        if (e.key === "F") {
+            console.log("f was pressed");
+            document.getElementById("name-filter").style.display = "block";
+            // document.getElementById("nameFilter").focus();
+        }
+    });
+
+
       // enable dropdowns
       $(".ui.filter.dropdown").dropdown({
         clearable: true,
