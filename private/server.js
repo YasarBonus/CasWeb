@@ -107,16 +107,22 @@ app.use((req, res, next) => {
 // Routen
 
 const i18n = require("i18n");
+const MatomoTracker = require("matomo-tracker");
 
 i18n.configure({
   locales: ["en", "de"],
   directory: __dirname + "/locales",
 });
 
-const MatomoTracker = require("matomo-tracker");
 const matomo = new MatomoTracker(13, "https://analytics.yasarbonus.com/matomo.php");
 matomo.on("error", function (err) {
-  console.log("error tracking request: ", err);
+  logger.error("error tracking request: ", err);
+});
+
+// Logging middleware
+app.use((req, res, next) => {
+  logger.info(`[${req.method}] ${req.url}`);
+  next();
 });
 
 app.get("/", (req, res) => {
@@ -164,11 +170,8 @@ app.get("/go/:slug", (req, res) => {
         )
           .then((response) => response.json())
           .then((data) => {
-            console.log("Api Response:" + data.data);
             // check if the casino exists with the slug by filtering the data
             const casino = data.data.find((casino) => casino.attributes.Slug === slug);
-
-            console.log("Got casino: " + casino);
             if (casino) {
               // if the casino exists, redirect to the casino affiliateUrl
               res.redirect(302, casino.attributes.affiliateUrl);
@@ -215,11 +218,8 @@ app.get("/casino/:slug", (req, res) => {
   fetch(apiUrl + `/casinos?fields[0]=Slug&pagination[pageSize]=500&fields[1]=Name&fields[2]=id`)
     .then((response) => response.json())
     .then((data) => {
-      console.log("Api Response:" + data.data);
       // check if the casino exists with the slug by filtering the data
       const casino = data.data.find((casino) => casino.attributes.Slug === slug);
-
-      console.log("Got casino: " + casino.id);
       // check if the casino exists
       if (casino) {
         // render the casino page with the casino data
@@ -246,7 +246,6 @@ app.get("/:slug", (req, res) => {
   fetch(apiUrl + `/custom-pages?filters[Slug][$eq][0]=${slug}`)
     .then((response) => response.json())
     .then((data) => {
-      console.log("Api Response:" + data);
       // check if the page exists
       if (data.data.length > 0) {
         // render the page with the page data
@@ -288,5 +287,5 @@ app.use((err, req, res, next) => {
 
 // Server starten
 app.listen(port, () => {
-  console.log(`Server is listening at http://localhost:${port}`);
+  logger.info(`Server is listening at http://localhost:${port}`);
 });
