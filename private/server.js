@@ -238,6 +238,53 @@ app.get("/casino/:slug", (req, res) => {
     });
 });
 
+
+// generate sitemap.xml from API for casinos, custom-pages and Menu from website
+app.get("/sitemap.xml", (req, res) => {
+  // fetch the casinos from the API
+  fetch(apiUrl + `/casinos?fields[0]=Slug&pagination[pageSize]=500`)
+    .then((response) => response.json())
+    .then((data) => {
+      // fetch the custom pages from the API
+      fetch(apiUrl + `/custom-pages?fields[0]=Slug&pagination[pageSize]=500`)
+        .then((response) => response.json())
+        .then((customPages) => {
+          fetch(apiUrl + `/website?populate=*`)
+            .then((response) => response.json())
+            .then((website) => {
+              // render the sitemap with the casino and custom page data
+              res.set("Content-Type", "text/xml");
+              res.render("pages/sitemap", {
+                casinos: data.data,
+                customPages: customPages.data,
+                pages: website.data.attributes.Menu.map((page) => {
+                  return {
+                    Slug: page.Target,
+                  };
+                }, []),
+                domain: "https://staging.yasarbonus.com",
+              });
+              console.log("Sitemap generated with data: ", data.data, customPages.data, website.data.attributes.Menu);
+            })
+            .catch((error) => {
+              console.error(error);
+              // return a 500 error if there was an error fetching the website
+              res.status(500).render("pages/error_pages/500");
+            });
+        })
+        .catch((error) => {
+          console.error(error);
+          // return a 500 error if there was an error fetching the custom pages
+          res.status(500).render("pages/error_pages/500");
+        });
+    })
+    .catch((error) => {
+      console.error(error);
+      // return a 500 error if there was an error fetching the casinos
+      res.status(500).render("pages/error_pages/500");
+    });
+});
+
 // custom pages at /:slug
 app.get("/:slug", (req, res) => {
   const slug = req.params.slug;
