@@ -6,6 +6,7 @@ const port = 3000;
 require("dotenv").config();
 
 const apiUrl = process.env.NODE_ENV === "production" ? process.env.API_URL_PROD : process.env.API_URL_DEV;
+const hostname = process.env.APP_HOSTNAME;
 
 // Winston logger
 const winston = require('winston');
@@ -262,7 +263,7 @@ app.get("/sitemap.xml", (req, res) => {
                     Slug: page.Target,
                   };
                 }, []),
-                domain: "https://staging.yasarbonus.com",
+                domain: hostname,
               });
               console.log("Sitemap generated with data: ", data.data, customPages.data, website.data.attributes.Menu);
             })
@@ -334,5 +335,5 @@ app.use((err, req, res, next) => {
 
 // Server starten
 app.listen(port, () => {
-  logger.info(`Server is listening at http://localhost:${port}`);
+  logger.info(`Server is listening at ${hostname}:${port}`);
 });
