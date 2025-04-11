@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/Joshua2504/CasWeb#readme",
   "dependencies": {
-    "dotenv": "^16.4.7",
+    "dotenv": "^16.5.0",
     "ejs": "^3.1.10",
     "express": "^4.21.1",
     "express": "^5.1.0",
